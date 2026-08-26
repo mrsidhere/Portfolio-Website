@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Sun, Moon, Volume2, VolumeX } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Sun, Moon, Volume2, VolumeX, Menu, X } from "lucide-react";
 import { sfx } from "../../lib/sfx";
 
 const LINKS = [
@@ -11,6 +12,7 @@ const LINKS = [
 
 export const Navbar = ({ theme, onToggleTheme, lenis }) => {
   const [soundOn, setSoundOn] = useState(sfx.enabled);
+  const [menuOpen, setMenuOpen] = useState(false);
   const toggleSound = () => {
     const v = !soundOn;
     setSoundOn(v);
@@ -20,6 +22,7 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
   const go = (target) => (e) => {
     e.preventDefault();
     sfx.click();
+    setMenuOpen(false);
     const el = document.querySelector(target);
     if (!el) return;
     if (lenis?.current) lenis.current.scrollTo(el, { offset: -40 });
@@ -51,7 +54,41 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
           className="w-10 h-10 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl transition-transform duration-300 hover:rotate-[25deg] hover:scale-110">
           {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
         </button>
+        <button onClick={() => { sfx.click(); setMenuOpen(true); }} data-testid="mobile-menu-btn" aria-label="Open menu"
+          className="md:hidden w-10 h-10 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl">
+          <Menu size={16} />
+        </button>
       </div>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}
+            data-testid="mobile-menu-overlay"
+            className="pointer-events-auto fixed inset-0 z-[70] bg-[var(--pf-bg)] flex flex-col px-8 pt-6 pb-12">
+            <div className="flex items-center justify-between">
+              <span className="font-headline text-sm font-black tracking-tighter">MR SID<sup className="text-[var(--pf-accent)]">®</sup></span>
+              <button onClick={() => { sfx.click(); setMenuOpen(false); }} data-testid="mobile-menu-close-btn" aria-label="Close menu"
+                className="w-11 h-11 grid place-items-center rounded-full border border-[var(--pf-border)]">
+                <X size={18} />
+              </button>
+            </div>
+            <nav className="flex-1 flex flex-col justify-center gap-2">
+              {LINKS.map((l, i) => (
+                <div key={l.label} className="overflow-hidden">
+                  <motion.a href={l.target} onClick={go(l.target)} data-testid={`mobile-nav-link-${l.label.toLowerCase()}`}
+                    initial={{ y: "110%" }} animate={{ y: 0 }} exit={{ y: "110%" }}
+                    transition={{ delay: 0.06 * i, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className="flex items-baseline gap-4 py-2">
+                    <span className="font-mono text-[10px] text-[var(--pf-muted)]">0{i + 1}</span>
+                    <span className="font-headline text-4xl font-black uppercase tracking-tighter">{l.label}</span>
+                  </motion.a>
+                </div>
+              ))}
+            </nav>
+            <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--pf-muted)]">INTENT CREATES IMPACT.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

@@ -31,9 +31,12 @@ Build a hyper-interactive, physics-based single-page portfolio (reference: haoqi
 - Process section responsive fix (border outside goo filter, responsive blob sizes/positions)
 - testing_agent iteration_1: backend 9/9, frontend 100%
 
+### Iteration 3 (June 2026)
+- Mobile hamburger menu: fullscreen overlay with staggered section links (Navbar.jsx), closes + Lenis-scrolls on tap
+- Branding: favicon.svg (Penrose mark) + PNG fallbacks + apple-touch-icon in /public; OG + Twitter share card (og-cover.jpg, AI-generated) and proper title/description in public/index.html
+
 ## Backlog
 - P0: Swap mock projects with real client work (user selected "will paste details" but hasn't sent them yet)
 - P0: Real owner inbox for contact emails (hello@mohdkaif.com currently undeliverable)
-- P1: Mobile hamburger nav for section links
 - P2: Case-study detail pages per project
 - P2: SEO meta/OG tags, favicon branding
