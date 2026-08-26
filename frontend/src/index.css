@@ -11,8 +11,9 @@
     --pf-text: #0d0e12;
     --pf-text2: #525866;
     --pf-muted: #8a8f9c;
-    --pf-accent: #e60039;
+    --pf-accent: #0b63e5;
     --pf-cyan: #00b8d9;
+    --pf-orange: #e56c0b;
     --pf-lime: #b8e600;
     --pf-lime-text: #5c9900;
     --pf-border: rgba(0, 0, 0, 0.14);
@@ -25,8 +26,9 @@
     --pf-text: #f4f4f6;
     --pf-text2: #a1a1aa;
     --pf-muted: #63636e;
-    --pf-accent: #ff3366;
+    --pf-accent: #3d8bff;
     --pf-cyan: #00e5ff;
+    --pf-orange: #ff8a3c;
     --pf-lime: #ccff00;
     --pf-lime-text: #ccff00;
     --pf-border: rgba(255, 255, 255, 0.14);
@@ -201,6 +203,21 @@ body {
 .pf-vault-wrap {
     --vel: 0;
     --rgb: 0;
+    position: relative;
+}
+.pf-vault-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+.pf-vault-wrap.webgl-on .pf-vault-img,
+.pf-vault-wrap.webgl-on .pf-rgb-layer {
+    opacity: 0 !important;
+}
+.pf-vault-wrap.webgl-on .pf-vault-card {
+    transform: none;
 }
 .pf-vault-card {
     transform: skewX(calc(var(--vel) * -0.14deg));

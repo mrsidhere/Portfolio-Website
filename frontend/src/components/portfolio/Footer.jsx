@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import { toast } from "sonner";
-import { Copy, ArrowUpRight } from "lucide-react";
+import { Copy, ArrowUpRight, Send } from "lucide-react";
+import { sfx } from "../../lib/sfx";
 import { TECH_TAGS, SOCIALS, EMAIL } from "../../data";
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Footer({ isTouch }) {
   const sectionRef = useRef(null);
@@ -9,6 +13,24 @@ export default function Footer({ isTouch }) {
   const emailRef = useRef(null);
   const tagRefs = useRef([]);
   const [copied, setCopied] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sending, setSending] = useState(false);
+
+  const submitBrief = async (e) => {
+    e.preventDefault();
+    if (sending) return;
+    setSending(true);
+    try {
+      await axios.post(`${API}/contact`, form);
+      sfx.merge();
+      toast.success("Brief received — I'll get back to you soon!");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      toast.error("Couldn't send right now. Copy the email below instead!");
+    } finally {
+      setSending(false);
+    }
+  };
 
   useEffect(() => {
     if (isTouch) return;
@@ -83,6 +105,7 @@ export default function Footer({ isTouch }) {
       document.execCommand("copy"); document.body.removeChild(ta);
     }
     setCopied(true);
+    sfx.click();
     toast.success("Email copied to clipboard", { description: EMAIL.toLowerCase() });
     setTimeout(() => setCopied(false), 2000);
   };
@@ -111,6 +134,25 @@ export default function Footer({ isTouch }) {
           <Copy size={11} /> CLICK TO COPY
         </p>
       </div>
+
+      <form onSubmit={submitBrief} data-testid="contact-form" className="relative z-10 mt-16 mx-auto w-full max-w-xl px-6 grid gap-3">
+        <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-muted)] text-center mb-2">— OR SEND A PROJECT BRIEF —</p>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="YOUR NAME"
+            data-testid="contact-name-input" maxLength={120}
+            className="bg-[var(--pf-surface)] border border-[var(--pf-border)] rounded-xl px-4 py-3 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
+          <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="YOUR EMAIL"
+            data-testid="contact-email-input" maxLength={200}
+            className="bg-[var(--pf-surface)] border border-[var(--pf-border)] rounded-xl px-4 py-3 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
+        </div>
+        <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="TELL ME ABOUT YOUR PROJECT..."
+          data-testid="contact-message-input" rows={4} maxLength={4000}
+          className="bg-[var(--pf-surface)] border border-[var(--pf-border)] rounded-xl px-4 py-3 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors resize-none placeholder:text-[var(--pf-muted)]" />
+        <button type="submit" disabled={sending} data-testid="contact-submit-btn" data-cursor="hover"
+          className="flex items-center justify-center gap-2 rounded-xl bg-[var(--pf-accent)] text-white font-mono text-xs tracking-[0.25em] py-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50">
+          {sending ? "TRANSMITTING..." : "LAUNCH BRIEF"} <Send size={13} />
+        </button>
+      </form>
 
       <div className="relative z-10 mt-24 px-6 sm:px-12 flex flex-col sm:flex-row items-center justify-between gap-6 pb-8">
         <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--pf-muted)]">© 2026 MOHD KAIF / MR SID — DELHI, IN</p>

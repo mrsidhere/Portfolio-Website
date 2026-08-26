@@ -1,0 +1,31 @@
+{
+  "summary": "Full backend + frontend E2E test of the physics portfolio (public URL). Backend: 9/9 pytest cases pass (GET /api/, POST+GET /api/status, POST /api/contact with real Resend delivery emailed:true, persistence via GET, 5 validation cases -> 422, sort order). Frontend: hero zero-gravity bug fix CONFIRMED (headline static on load, 0px drift over 1.5s, lines read INTENT/CREATES/IMPACT.), cursor collision scatters letters up to 401px and they magnetically return to within 13px of home after ~6s. Accent verified electric blue rgb(61,139,255) on IMPACT letters and on the submit button. Process arena responsive at 1920/820/390 with visible dashed border and all 3 blobs inside bounds; drag-merge unlocks DISCOVERY; mobile tap-unlock works. Vault gains 'webgl-on' class with a 1920x525 canvas, drag works, coordinate click opens vault-expanded-modal and vault-close-btn closes it. Sound toggle icon toggles cleanly. Testimonial throw advances deck. Contact form E2E posts, shows sonner success toast 'Brief received…', clears fields, and the brief is persisted in Mongo. Email copy toast + light-theme toggle work. Zero console/page errors on any viewport; no horizontal overflow at 390px.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "#process @ 390px (mobile)", "issues": ["DISCOVERY (8%/24%) and DEVELOPMENT (40%/42%) blob centers are only ~113px apart while the SVG goo filter (stdDeviation 12) bridges them, so on load the two blobs look already merged/blended into one shape. Bounding boxes overlap by ~10x23px. Blobs are still inside the arena and non-overlapping geometrically; consider spreading HOME_POS or reducing goo blur below the sm breakpoint."]},
+      {"screen": "Navbar @ 390px", "issues": ["Section links (WORK/PROCESS/VOICES/CONTACT) are hidden on mobile with no hamburger/alternate nav — only logo + sound + theme buttons remain, so mobile users have no in-page navigation."]},
+      {"screen": "Hero after spring-return", "issues": ["Letters settle within ~13px of home but a few retain a small residual rotation for a while (angle decay 0.92/frame only applies when speed<1.2), so the headline can look very slightly tilted right after a heavy smash. Cosmetic only."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Optional: increase mobile blob separation in ProcessEngine HOME_POS (or lower goo stdDeviation <640px) so DISCOVERY/DEVELOPMENT don't appear pre-merged at 390px",
+    "Optional: add a mobile nav (hamburger/sheet) for section links"
+  ],
+  "critical_code_review_comments": [
+    "POST /api/contact rate limit uses an in-process list (_contact_hits) — global (not per-IP) and lost on restart; a single spammer can lock out all users for an hour. Move to per-IP with a TTL store if abuse matters.",
+    "GET /api/contact is fully public and returns every submitter's name/email/message — this is a PII leak on a public portfolio. Add auth or remove the endpoint.",
+    "Vault.jsx (286 lines) and Footer.jsx (172 lines) are fine size-wise; no >700-line files. No _id leaks found (both list endpoints project {_id:0})."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100%", "frontend": "100% (all requested flows pass; 3 cosmetic/UX notes)"},
+  "seed_data_creation": "Created TEST_* contact briefs and status checks during testing; all TEST_-prefixed docs deleted afterwards (4 briefs, 1 status check removed). 4 pre-existing non-TEST briefs left untouched.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "none required (public site)",
+  "context_for_next_testing_agent": "Backend regression suite lives at /app/backend/tests/backend_test.py (pytest, uses REACT_APP_BACKEND_URL from /app/frontend/.env; contact POST really sends email to delivered@resend.dev). Playwright notes: sonner toasts must be read via [data-sonner-toast] and polled within ~4s (default duration) — waiting 6s misses them. Use page.evaluate scrollIntoView (Lenis active). Hero physics letters are .pf-letter divs; measure getBoundingClientRect deltas rather than screenshots. Vault cards drift — click by viewport coords (960,500). Hero physics is disabled <768px (static headline is expected).",
+  "rca_of_the_issue": "No functional defects reproduced. Two earlier apparent failures were test-harness artifacts: (1) success toast 'missing' because sonner auto-dismisses at 4s and the assertion ran at 6s; (2) generic [role=status] selector doesn't match sonner's [data-sonner-toast]. Both fixed in the test scripts and the flows then verified end to end (toast at 0.5s, brief persisted in Mongo)."
+}

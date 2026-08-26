@@ -19,7 +19,7 @@ export const TESTIMONIALS = [
 
 export const PHASES = [
   { id: "discovery", num: "01", title: "DISCOVERY", color: "var(--pf-accent)", details: "Deep research, strategy sprints & moodboards. I map your brand's gravity before a single pixel moves — user flows, sitemaps, motion prototypes." },
-  { id: "development", num: "02", title: "DEVELOPMENT", color: "var(--pf-cyan)", details: "GSAP timelines, WordPress & Elementor architecture, custom WebGL shaders. Every interaction engineered at 60fps with production-grade code." },
+  { id: "development", num: "02", title: "DEVELOPMENT", color: "var(--pf-orange)", details: "GSAP timelines, WordPress & Elementor architecture, custom WebGL shaders. Every interaction engineered at 60fps with production-grade code." },
   { id: "deployment", num: "03", title: "DEPLOYMENT", color: "var(--pf-lime)", details: "Performance audits, Core Web Vitals tuning, SEO wiring & launch. Then AI-powered analytics loops to keep the ecosystem evolving." },
 ];
 

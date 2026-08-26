@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Matter from "matter-js";
 import { motion } from "framer-motion";
 import { RotateCcw } from "lucide-react";
+import { sfx } from "../../lib/sfx";
 
 const HEADLINE = ["INTENT", "CREATES", "IMPACT."];
 const NAME_WORDS = ["MOHD", "KAIF", "/", "MR", "SID"];
@@ -45,27 +46,31 @@ export default function HeroPhysics({ staticMode, theme }) {
       const W = container.clientWidth;
       const H = container.clientHeight;
       engine = Matter.Engine.create();
-      engine.gravity.y = 1.35;
+      engine.gravity.y = 0;
 
       const cvs = document.createElement("canvas");
       const ctx = cvs.getContext("2d");
       const bigSize = Math.max(48, Math.min(W / 9, 118));
       const smallSize = 15;
       const bodies = [];
+      const springs = [];
 
-      const addLetter = (char, x, y, w, h, cls, delayY) => {
+      const addLetter = (char, x, y, w, h, cls) => {
         const el = document.createElement("div");
         el.className = cls;
         el.textContent = char;
         el.style.width = `${w}px`;
         el.style.height = `${h}px`;
         layer.appendChild(el);
-        const body = Matter.Bodies.rectangle(x, y - delayY, w, h, {
-          restitution: 0.45, friction: 0.35, frictionAir: 0.012, density: 0.0018,
-          angle: (Math.random() - 0.5) * 0.35,
+        const body = Matter.Bodies.rectangle(x, y, w, h, {
+          restitution: 0.55, frictionAir: 0.055, density: 0.0018,
         });
-        body.plugin = { el, w, h };
+        body.plugin = { el, w, h, hx: x, hy: y };
+        const spring = Matter.Constraint.create({
+          pointA: { x, y }, bodyB: body, stiffness: 0.0032, damping: 0.05, length: 0,
+        });
         bodies.push(body);
+        springs.push(spring);
       };
 
       ctx.font = `900 ${bigSize}px Unbounded, sans-serif`;
@@ -80,8 +85,7 @@ export default function HeroPhysics({ staticMode, theme }) {
         chars.forEach((c, ci) => {
           const w = widths[ci];
           addLetter(c, cx + w / 2, cy, w, bigSize * 0.98,
-            `pf-letter ${li === 2 ? "pf-letter-accent" : ""}`,
-            H * 0.9 + li * 220 + ci * 45 + Math.random() * 120);
+            `pf-letter ${li === 2 ? "pf-letter-accent" : ""}`);
           cx += w;
         });
       });
@@ -93,26 +97,44 @@ export default function HeroPhysics({ staticMode, theme }) {
       let px = W / 2 - pillTotal / 2;
       NAME_WORDS.forEach((wrd, i) => {
         const w = pillWidths[i];
-        addLetter(wrd, px + w / 2, blockTop - lineH * 0.9, w, pillH, "pf-pill", H * 1.6 + i * 90);
+        addLetter(wrd, px + w / 2, blockTop - lineH * 0.9, w, pillH, "pf-pill");
         px += w + 10;
       });
 
       const opts = { isStatic: true, render: { visible: false } };
       const bounds = [
         Matter.Bodies.rectangle(W / 2, H + 40, W * 2, 80, opts),
-        Matter.Bodies.rectangle(-40, H / 2, 80, H * 6, opts),
-        Matter.Bodies.rectangle(W + 40, H / 2, 80, H * 6, opts),
+        Matter.Bodies.rectangle(W / 2, -40, W * 2, 80, opts),
+        Matter.Bodies.rectangle(-40, H / 2, 80, H * 2, opts),
+        Matter.Bodies.rectangle(W + 40, H / 2, 80, H * 2, opts),
       ];
       const mouseBody = Matter.Bodies.circle(-500, -500, 42, { isStatic: true, restitution: 0.9 });
-      Matter.Composite.add(engine.world, [...bodies, ...bounds, mouseBody]);
+      Matter.Composite.add(engine.world, [...bodies, ...springs, ...bounds, mouseBody]);
 
+      let lastSfx = 0;
+      Matter.Events.on(engine, "collisionStart", (ev) => {
+        const now = performance.now();
+        if (now - lastSfx < 110) return;
+        for (const pair of ev.pairs) {
+          const speed = Math.max(pair.bodyA.speed || 0, pair.bodyB.speed || 0, mouseSpeed.v);
+          if (speed > 4) { sfx.collide(Math.min(speed / 30, 1)); lastSfx = now; break; }
+        }
+      });
+
+      const mouseSpeed = { v: 0, px: 0, py: 0 };
       let last = performance.now();
       const tick = (now) => {
         const dt = Math.min(now - last, 33);
         last = now;
+        mouseSpeed.v = Math.hypot(mouse.x - mouseSpeed.px, mouse.y - mouseSpeed.py);
+        mouseSpeed.px = mouse.x; mouseSpeed.py = mouse.y;
         Matter.Body.setPosition(mouseBody, { x: mouse.x, y: mouse.y });
         Matter.Engine.update(engine, dt);
         for (const b of bodies) {
+          if (b.speed < 2.5) {
+            Matter.Body.setAngle(b, b.angle * 0.9);
+            Matter.Body.setAngularVelocity(b, b.angularVelocity * 0.85);
+          }
           const { el, w, h } = b.plugin;
           el.style.transform = `translate3d(${b.position.x - w / 2}px, ${b.position.y - h / 2}px, 0) rotate(${b.angle}rad)`;
         }
@@ -154,7 +176,7 @@ export default function HeroPhysics({ staticMode, theme }) {
         <>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.4, duration: 1 }}
             className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 font-mono text-[10px] tracking-[0.3em] text-[var(--pf-muted)] pointer-events-none">
-            ⟢ SMASH THE LETTERS WITH YOUR CURSOR ⟣
+            ⟢ SMASH THE HEADLINE — IT MAGNETICALLY SNAPS BACK ⟣
           </motion.p>
           <button onClick={() => setSeed((s) => s + 1)} data-testid="hero-reset-btn" aria-label="Reset physics"
             className="absolute bottom-16 right-6 sm:right-12 z-20 w-11 h-11 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-md transition-transform duration-300 hover:-rotate-180">

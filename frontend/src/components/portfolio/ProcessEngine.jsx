@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { sfx } from "../../lib/sfx";
 import { PHASES } from "../../data";
 
-const HOME_POS = [{ x: "12%", y: "30%" }, { x: "42%", y: "48%" }, { x: "72%", y: "26%" }];
+const HOME_POS = [{ x: "8%", y: "14%" }, { x: "40%", y: "52%" }, { x: "68%", y: "10%" }];
 
 export default function ProcessEngine({ isTouch }) {
   const arenaRef = useRef(null);
@@ -11,7 +12,11 @@ export default function ProcessEngine({ isTouch }) {
   const [pulse, setPulse] = useState(null);
 
   const unlock = (id) => {
-    setUnlocked((u) => (u.includes(id) ? u : [...u, id]));
+    setUnlocked((u) => {
+      if (u.includes(id)) return u;
+      sfx.merge();
+      return [...u, id];
+    });
   };
 
   const onDragEnd = (i) => {
@@ -57,28 +62,29 @@ export default function ProcessEngine({ isTouch }) {
         </defs>
       </svg>
 
-      <div ref={arenaRef} data-testid="process-arena" className="relative h-[380px] sm:h-[440px] rounded-2xl border border-dashed border-[var(--pf-border)] overflow-hidden"
-        style={{ filter: "url(#pf-goo)" }}>
-        {PHASES.map((phase, i) => (
-          <motion.div key={phase.id} ref={(el) => (blobRefs.current[i] = el)} drag={!isTouch} dragConstraints={arenaRef} dragElastic={0.25}
-            dragTransition={{ bounceStiffness: 320, bounceDamping: 16 }}
-            onDragEnd={() => onDragEnd(i)}
-            onTap={() => isTouch && unlock(phase.id)}
-            whileDrag={{ scale: 1.12 }}
-            animate={pulse === i ? { scale: [1, 1.35, 1] } : {}}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            data-testid={`process-blob-${phase.id}`} data-cursor="hover"
-            className="absolute w-32 h-32 sm:w-44 sm:h-44 cursor-grab active:cursor-grabbing"
-            style={{ left: HOME_POS[i].x, top: HOME_POS[i].y }}>
-            <div className="w-full h-full rounded-full grid place-items-center animate-blob-idle"
-              style={{ background: phase.color, animationDelay: `${i * 1.3}s` }}>
-              <div className="text-center pointer-events-none">
-                <p className="font-mono text-[9px] tracking-[0.3em] text-black/60">{phase.num}</p>
-                <p className="font-headline text-xs sm:text-sm font-black tracking-tight text-black">{phase.title}</p>
+      <div data-testid="process-arena" className="relative h-[340px] sm:h-[440px] rounded-2xl border border-dashed border-[var(--pf-border)] overflow-hidden">
+        <div ref={arenaRef} className="absolute inset-0" style={{ filter: "url(#pf-goo)" }}>
+          {PHASES.map((phase, i) => (
+            <motion.div key={phase.id} ref={(el) => (blobRefs.current[i] = el)} drag={!isTouch} dragConstraints={arenaRef} dragElastic={0.25}
+              dragTransition={{ bounceStiffness: 320, bounceDamping: 16 }}
+              onDragEnd={() => onDragEnd(i)}
+              onTap={() => isTouch && unlock(phase.id)}
+              whileDrag={{ scale: 1.12 }}
+              animate={pulse === i ? { scale: [1, 1.35, 1] } : {}}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              data-testid={`process-blob-${phase.id}`} data-cursor="hover"
+              className="absolute w-24 h-24 sm:w-36 sm:h-36 lg:w-44 lg:h-44 cursor-grab active:cursor-grabbing"
+              style={{ left: HOME_POS[i].x, top: HOME_POS[i].y }}>
+              <div className="w-full h-full rounded-full grid place-items-center animate-blob-idle"
+                style={{ background: phase.color, animationDelay: `${i * 1.3}s` }}>
+                <div className="text-center pointer-events-none">
+                  <p className="font-mono text-[9px] tracking-[0.3em] text-black/60">{phase.num}</p>
+                  <p className="font-headline text-[10px] sm:text-sm font-black tracking-tight text-black">{phase.title}</p>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       <div className="mt-12 grid sm:grid-cols-3 gap-6">

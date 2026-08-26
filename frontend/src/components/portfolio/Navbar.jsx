@@ -1,4 +1,6 @@
-import { Sun, Moon } from "lucide-react";
+import { useState } from "react";
+import { Sun, Moon, Volume2, VolumeX } from "lucide-react";
+import { sfx } from "../../lib/sfx";
 
 const LINKS = [
   { label: "WORK", target: "#vault" },
@@ -8,8 +10,16 @@ const LINKS = [
 ];
 
 export const Navbar = ({ theme, onToggleTheme, lenis }) => {
+  const [soundOn, setSoundOn] = useState(sfx.enabled);
+  const toggleSound = () => {
+    const v = !soundOn;
+    setSoundOn(v);
+    sfx.setEnabled(v);
+    if (v) sfx.click();
+  };
   const go = (target) => (e) => {
     e.preventDefault();
+    sfx.click();
     const el = document.querySelector(target);
     if (!el) return;
     if (lenis?.current) lenis.current.scrollTo(el, { offset: -40 });
@@ -32,10 +42,16 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
           </a>
         ))}
       </nav>
-      <button onClick={onToggleTheme} data-testid="theme-toggle-btn" aria-label="Toggle theme"
-        className="pointer-events-auto w-10 h-10 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl transition-transform duration-300 hover:rotate-[25deg] hover:scale-110">
-        {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-      </button>
+      <div className="pointer-events-auto flex items-center gap-2">
+        <button onClick={toggleSound} data-testid="sound-toggle-btn" aria-label="Toggle sound"
+          className="w-10 h-10 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl transition-transform duration-300 hover:scale-110">
+          {soundOn ? <Volume2 size={15} /> : <VolumeX size={15} />}
+        </button>
+        <button onClick={() => { sfx.click(); onToggleTheme(); }} data-testid="theme-toggle-btn" aria-label="Toggle theme"
+          className="w-10 h-10 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl transition-transform duration-300 hover:rotate-[25deg] hover:scale-110">
+          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
+      </div>
     </header>
   );
 };

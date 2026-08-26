@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote } from "lucide-react";
+import { sfx } from "../../lib/sfx";
 import { TESTIMONIALS } from "../../data";
 
 export default function Testimonials() {
@@ -9,6 +10,7 @@ export default function Testimonials() {
   const [thrown, setThrown] = useState(0);
 
   const advance = (dir) => {
+    sfx.whoosh();
     setExitDir(dir);
     setIndex((i) => (i + 1) % TESTIMONIALS.length);
     setThrown((t) => t + 1);
