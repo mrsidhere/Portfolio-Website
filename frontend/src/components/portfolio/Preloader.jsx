@@ -51,7 +51,7 @@ export const Preloader = ({ onDone }) => {
               MR SID<sup className="text-[var(--pf-accent)]">®</sup>
             </motion.p>
           </div>
-          <p className="font-mono text-[10px] tracking-[0.4em] text-[var(--pf-muted)] mb-10">INTENT CREATES IMPACT.</p>
+          <p className="font-mono text-[10px] tracking-[0.4em] text-[var(--pf-muted)] mb-10">INTENT CREATES MR SID IMPACT.</p>
           <div className="flex items-center gap-4">
             <div className="w-40 h-px bg-[var(--pf-border)] overflow-hidden">
               <div className="h-full bg-[var(--pf-accent)] transition-[width] duration-150 ease-out" style={{ width: `${progress}%` }} />
