@@ -7,9 +7,9 @@ import { sfx } from "../../lib/sfx";
 const HEADLINE = ["INTENT", "CREATES", "IMPACT."];
 const NAME_WORDS = ["MOHD", "KAIF", "/", "MR", "SID"];
 
-const StaticHero = () => (
+const StaticHero = ({ ready }) => (
   <div className="relative z-10 h-full flex flex-col items-start justify-center px-6 sm:px-12">
-    <motion.div initial="hidden" animate="show" transition={{ staggerChildren: 0.12 }} className="space-y-1">
+    <motion.div initial="hidden" animate={ready ? "show" : "hidden"} transition={{ staggerChildren: 0.12 }} className="space-y-1">
       <div className="flex flex-wrap gap-2 mb-6">
         {NAME_WORDS.map((w, i) => (
           <motion.span key={i} variants={{ hidden: { y: 40, opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } } }}
@@ -28,13 +28,13 @@ const StaticHero = () => (
   </div>
 );
 
-export default function HeroPhysics({ staticMode, theme }) {
+export default function HeroPhysics({ staticMode, theme, ready }) {
   const containerRef = useRef(null);
   const lettersRef = useRef(null);
   const [seed, setSeed] = useState(0);
 
   useEffect(() => {
-    if (staticMode) return;
+    if (staticMode || !ready) return;
     const container = containerRef.current;
     const layer = lettersRef.current;
     if (!container || !layer) return;
@@ -158,12 +158,12 @@ export default function HeroPhysics({ staticMode, theme }) {
       if (engine) { Matter.World.clear(engine.world, false); Matter.Engine.clear(engine); }
       layer.innerHTML = "";
     };
-  }, [staticMode, seed]);
+  }, [staticMode, ready, seed]);
 
   return (
     <section id="top" ref={containerRef} data-testid="hero-physics-section" className="relative h-screen overflow-hidden select-none">
       <div className="pf-grid-bg absolute inset-0" aria-hidden="true" />
-      {staticMode ? <StaticHero /> : <div ref={lettersRef} className="absolute inset-0 z-10" />}
+      {staticMode ? <StaticHero ready={ready} /> : <div ref={lettersRef} className="absolute inset-0 z-10" />}
 
       <div className="absolute top-24 left-6 sm:left-12 z-20 pointer-events-none">
         <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.8 }}

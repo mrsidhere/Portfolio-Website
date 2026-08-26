@@ -35,6 +35,9 @@ Build a hyper-interactive, physics-based single-page portfolio (reference: haoqi
 - Mobile hamburger menu: fullscreen overlay with staggered section links (Navbar.jsx), closes + Lenis-scrolls on tap
 - Branding: favicon.svg (Penrose mark) + PNG fallbacks + apple-touch-icon in /public; OG + Twitter share card (og-cover.jpg, AI-generated) and proper title/description in public/index.html
 
+### Iteration 4 (June 2026)
+- Branded preloader (Preloader.jsx): Penrose stroke-draw animation, wordmark, eased 0-100% counter gated on document.fonts.ready (min 1.7s), slide-up exit; hero physics init deferred until preloader completes (ready prop) so headline always lands assembled
+
 ## Backlog
 - P0: Swap mock projects with real client work (user selected "will paste details" but hasn't sent them yet)
 - P0: Real owner inbox for contact emails (hello@mohdkaif.com currently undeliverable)

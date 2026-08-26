@@ -6,6 +6,7 @@ import Lenis from "lenis";
 import { Toaster } from "sonner";
 import { useDevice } from "@/hooks/useDevice";
 import { Cursor } from "@/components/portfolio/Cursor";
+import { Preloader } from "@/components/portfolio/Preloader";
 import { Navbar } from "@/components/portfolio/Navbar";
 import HeroPhysics from "@/components/portfolio/HeroPhysics";
 import Manifesto from "@/components/portfolio/Manifesto";
@@ -21,6 +22,7 @@ function App() {
   const { isTouch, reducedMotion } = useDevice();
   const lenisRef = useRef(null);
   const [theme, setTheme] = useState(() => localStorage.getItem("pf-theme") || "dark");
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
@@ -50,10 +52,11 @@ function App() {
   return (
     <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
       {!isTouch && <Cursor />}
+      <Preloader onDone={() => setReady(true)} />
       <Toaster position="bottom-center" theme={theme} />
       <Navbar theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} lenis={lenisRef} />
       <main>
-        <HeroPhysics staticMode={isTouch || reducedMotion} theme={theme} />
+        <HeroPhysics staticMode={isTouch || reducedMotion} theme={theme} ready={ready} />
         <Manifesto reducedMotion={reducedMotion} />
         <Marquee />
         <Vault />
