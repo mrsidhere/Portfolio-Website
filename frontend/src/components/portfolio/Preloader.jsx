@@ -39,19 +39,47 @@ export const Preloader = ({ onDone }) => {
         <motion.div key="preloader" data-testid="preloader"
           exit={{ y: "-100%", transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] } }}
           className="fixed inset-0 z-[200] bg-[var(--pf-bg)] flex flex-col items-center justify-center">
+          
           <svg width="72" height="72" viewBox="0 0 100 100" className="mb-8">
-            <motion.path d="M50 8 L92 82 L8 82 Z" fill="none" stroke="var(--pf-accent)" strokeWidth="6"
-              initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.2, ease: "easeInOut" }} />
-            <motion.path d="M50 40 L74 82 L26 82 Z" fill="none" stroke="var(--pf-text)" strokeWidth="5"
-              initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1, delay: 0.35, ease: "easeInOut" }} />
+            {/* The outer eye shape that blinks */}
+            <motion.path 
+              d="M10 50 C 30 20, 70 20, 90 50 C 70 80, 30 80, 10 50 Z" 
+              fill="none" 
+              stroke="var(--pf-accent)" 
+              strokeWidth="4"
+              animate={{ scaleY: [1, 1, 0.05, 1, 1] }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity, 
+                ease: "easeInOut",
+                times: [0, 0.45, 0.5, 0.55, 1] 
+              }} 
+            />
+            {/* The pupil that looks left and right */}
+            <motion.circle 
+              cx="50" 
+              cy="50" 
+              r="12" 
+              fill="var(--pf-text)"
+              animate={{ x: [0, -12, 12, 0, 0] }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity, 
+                ease: "easeInOut",
+                times: [0, 0.2, 0.6, 0.8, 1]
+              }} 
+            />
           </svg>
+
           <div className="overflow-hidden mb-3">
             <motion.p initial={{ y: "110%" }} animate={{ y: 0 }} transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="font-headline text-lg font-black tracking-tighter">
               MR SID<sup className="text-[var(--pf-accent)]">®</sup>
             </motion.p>
           </div>
-          <p className="font-mono text-[10px] tracking-[0.4em] text-[var(--pf-muted)] mb-10">INTENT CREATES MR SID IMPACT.</p>
+          
+          <p className="font-mono text-[10px] tracking-[0.4em] text-[var(--pf-muted)] mb-10">PLEASE FASTEN YOUR SEATBELTS.</p>
+          
           <div className="flex items-center gap-4">
             <div className="w-40 h-px bg-[var(--pf-border)] overflow-hidden">
               <div className="h-full bg-[var(--pf-accent)] transition-[width] duration-150 ease-out" style={{ width: `${progress}%` }} />
