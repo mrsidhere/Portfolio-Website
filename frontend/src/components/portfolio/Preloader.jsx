@@ -9,7 +9,8 @@ export const Preloader = ({ onDone }) => {
     document.body.style.overflow = "hidden";
     let raf;
     const start = performance.now();
-    const MIN = 1700;
+    // 1. INCREASED LOADING TIME: Changed from 1700 to 3500 (3.5 seconds)
+    const MIN = 3500;
     let fontsReady = false;
     document.fonts.ready.then(() => { fontsReady = true; });
 
@@ -18,13 +19,17 @@ export const Preloader = ({ onDone }) => {
       const eased = 1 - Math.pow(1 - t, 3);
       const cap = fontsReady ? 100 : 92;
       setProgress(Math.min(Math.round(eased * 100), cap));
+      
       if (t >= 1 && fontsReady) {
         setProgress(100);
-        setExiting(true);
+        // 2. ADDED A SMALL DELAY AT 100% so it doesn't rush off the screen
         setTimeout(() => {
-          document.body.style.overflow = "";
-          onDone();
-        }, 750);
+          setExiting(true);
+          setTimeout(() => {
+            document.body.style.overflow = "";
+            onDone();
+          }, 1000); // Matches the new slower slide-up duration
+        }, 400);
         return;
       }
       raf = requestAnimationFrame(tick);
@@ -37,23 +42,19 @@ export const Preloader = ({ onDone }) => {
     <AnimatePresence>
       {!exiting ? (
         <motion.div key="preloader" data-testid="preloader"
-          exit={{ y: "-100%", transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] } }}
+          // Slowed down the slide-up speed slightly so you can see the wink happen
+          exit={{ y: "-100%", transition: { duration: 1, ease: [0.76, 0, 0.24, 1] } }}
           className="fixed inset-0 z-[200] bg-[var(--pf-bg)] flex flex-col items-center justify-center">
           
-          {/* Animated Hovering and Winking ; ) */}
           <motion.div 
             className="mb-8 flex text-[72px] font-mono font-black text-[var(--pf-accent)]"
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
             <motion.span
-              animate={{ scaleY: [1, 0.1, 1, 1, 1] }}
-              transition={{ 
-                duration: 3, 
-                repeat: Infinity, 
-                ease: "easeInOut",
-                times: [0, 0.05, 0.1, 0.5, 1] 
-              }}
+              // 3. THE WINK ANIMATION: It only happens during the "exit" phase now!
+              animate={{ scaleY: 1 }}
+              exit={{ scaleY: [1, 0.1, 1], transition: { duration: 0.6, ease: "easeInOut" } }}
               style={{ display: "inline-block", transformOrigin: "center 60%" }}
             >
               ;
