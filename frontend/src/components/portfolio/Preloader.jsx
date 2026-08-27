@@ -40,41 +40,31 @@ export const Preloader = ({ onDone }) => {
           exit={{ y: "-100%", transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] } }}
           className="fixed inset-0 z-[200] bg-[var(--pf-bg)] flex flex-col items-center justify-center">
           
-          <svg width="72" height="72" viewBox="0 0 100 100" className="mb-8">
-            {/* The outer eye shape that blinks */}
-            <motion.path 
-              d="M10 50 C 30 20, 70 20, 90 50 C 70 80, 30 80, 10 50 Z" 
-              fill="none" 
-              stroke="var(--pf-accent)" 
-              strokeWidth="4"
-              animate={{ scaleY: [1, 1, 0.05, 1, 1] }}
+          {/* Animated Hovering and Winking ; ) */}
+          <motion.div 
+            className="mb-8 flex text-[72px] font-mono font-black text-[var(--pf-accent)]"
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <motion.span
+              animate={{ scaleY: [1, 0.1, 1, 1, 1] }}
               transition={{ 
-                duration: 4, 
+                duration: 3, 
                 repeat: Infinity, 
                 ease: "easeInOut",
-                times: [0, 0.45, 0.5, 0.55, 1] 
-              }} 
-            />
-            {/* The pupil that looks left and right */}
-            <motion.circle 
-              cx="50" 
-              cy="50" 
-              r="12" 
-              fill="var(--pf-text)"
-              animate={{ x: [0, -12, 12, 0, 0] }}
-              transition={{ 
-                duration: 4, 
-                repeat: Infinity, 
-                ease: "easeInOut",
-                times: [0, 0.2, 0.6, 0.8, 1]
-              }} 
-            />
-          </svg>
+                times: [0, 0.05, 0.1, 0.5, 1] 
+              }}
+              style={{ display: "inline-block", transformOrigin: "center 60%" }}
+            >
+              ;
+            </motion.span>
+            <span className="ml-2">)</span>
+          </motion.div>
 
           <div className="overflow-hidden mb-3">
             <motion.p initial={{ y: "110%" }} animate={{ y: 0 }} transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="font-headline text-lg font-black tracking-tighter">
-              MR SID<sup className="text-[var(--pf-accent)]">®</sup>
+              className="font-headline text-lg font-black tracking-tighter uppercase">
+              Mohd Kaif aka Mr Sid<sup className="text-[var(--pf-accent)]">®</sup>
             </motion.p>
           </div>
           
