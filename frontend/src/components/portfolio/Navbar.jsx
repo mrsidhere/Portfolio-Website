@@ -13,12 +13,14 @@ const LINKS = [
 export const Navbar = ({ theme, onToggleTheme, lenis }) => {
   const [soundOn, setSoundOn] = useState(sfx.enabled);
   const [menuOpen, setMenuOpen] = useState(false);
+  
   const toggleSound = () => {
     const v = !soundOn;
     setSoundOn(v);
     sfx.setEnabled(v);
     if (v) sfx.click();
   };
+  
   const go = (target) => (e) => {
     e.preventDefault();
     sfx.click();
@@ -31,12 +33,12 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 px-4 sm:px-8 py-4 flex items-center justify-between pointer-events-none">
-      <a href="#top" onClick={go("#top")} data-testid="nav-brand" className="pointer-events-auto flex items-center gap-2 font-headline text-sm tracking-tighter font-black">
-        <span className="w-7 h-7 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-md">
-          <svg width="14" height="14" viewBox="0 0 100 100"><path d="M50 8 L92 82 L74 82 L50 40 L26 82 L8 82 Z" fill="var(--pf-accent)" /></svg>
-        </span>
-        MR&nbsp;SID<sup className="text-[var(--pf-accent)]">®</sup>
+      
+      {/* Desktop Logo */}
+      <a href="#top" onClick={go("#top")} data-testid="nav-brand" className="pointer-events-auto flex items-center gap-2">
+        <img src="/logo.png" alt="Mohd Kaif Logo" className="h-8 w-auto object-contain" />
       </a>
+      
       <nav className="pointer-events-auto hidden md:flex items-center gap-1 rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl px-2 py-1.5">
         {LINKS.map((l) => (
           <a key={l.label} href={l.target} onClick={go(l.target)} data-testid={`nav-link-${l.label.toLowerCase()}`}
@@ -45,6 +47,7 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
           </a>
         ))}
       </nav>
+      
       <div className="pointer-events-auto flex items-center gap-2">
         <button onClick={toggleSound} data-testid="sound-toggle-btn" aria-label="Toggle sound"
           className="w-10 h-10 grid place-items-center rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl transition-transform duration-300 hover:scale-110">
@@ -66,12 +69,18 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
             data-testid="mobile-menu-overlay"
             className="pointer-events-auto fixed inset-0 z-[70] bg-[var(--pf-bg)] flex flex-col px-8 pt-6 pb-12">
             <div className="flex items-center justify-between">
-              <span className="font-headline text-sm font-black tracking-tighter">MR SID<sup className="text-[var(--pf-accent)]">®</sup></span>
+              
+              {/* Mobile Menu Logo */}
+              <span className="font-headline text-sm font-black tracking-tighter">
+                <img src="/logo.png" alt="Mohd Kaif Logo" className="h-8 w-auto object-contain" />
+              </span>
+              
               <button onClick={() => { sfx.click(); setMenuOpen(false); }} data-testid="mobile-menu-close-btn" aria-label="Close menu"
                 className="w-11 h-11 grid place-items-center rounded-full border border-[var(--pf-border)]">
                 <X size={18} />
               </button>
             </div>
+            
             <nav className="flex-1 flex flex-col justify-center gap-2">
               {LINKS.map((l, i) => (
                 <div key={l.label} className="overflow-hidden">
@@ -85,7 +94,7 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
                 </div>
               ))}
             </nav>
-            <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--pf-muted)]">INTENT CREATES IMPACT.</p>
+            <p className="font-mono text-[10px] tracking-[0.3em] text-[var(--pf-muted)]">REALITY, RENDERED.</p>
           </motion.div>
         )}
       </AnimatePresence>
