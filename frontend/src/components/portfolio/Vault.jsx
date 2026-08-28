@@ -276,14 +276,16 @@ export default function Vault() {
                 <h3 className="font-headline text-3xl sm:text-5xl font-black tracking-tighter uppercase mb-8">{ITEMS[expanded].title}</h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[var(--pf-text2)] max-w-md">{ITEMS[expanded].description}</p>
                 
-                {/* WhatsApp Contact Button */}
+                {/* Contact / Hire Button - SEO Optimized & Responsive */}
                 <a 
                   href="https://wa.me/919939403048?text=Hi%20Mr.%20Sid!%20I%20was%20just%20exploring%20your%20portfolio%20and%20I%20would%20love%20to%20discuss%20bringing%20a%20project%20to%20life%20with%20you." 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 mt-8 w-fit font-mono text-[11px] uppercase tracking-[0.2em] px-6 py-3 rounded-full border border-[var(--pf-accent)] text-[var(--pf-accent)] hover:bg-[var(--pf-accent)] hover:text-[var(--pf-bg)] transition-all duration-300"
+                  aria-label="Hire Mr. Sid - Open WhatsApp chat"
+                  className="group flex items-center justify-center gap-3 mt-8 w-full sm:w-max bg-[var(--pf-accent)] text-[var(--pf-bg)] font-headline text-sm font-bold uppercase tracking-[0.15em] px-8 py-4 rounded-full transition-all duration-300 hover:scale-[1.02]"
                 >
-                  Discuss on WhatsApp
+                  <span>Let's Talk</span>
+                  <ArrowUpRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
                 </a>
 
                 <div className="mt-12 h-px w-24 bg-[var(--pf-accent)]" />
