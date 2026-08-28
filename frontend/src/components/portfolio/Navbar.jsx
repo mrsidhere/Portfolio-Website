@@ -34,9 +34,9 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
   return (
     <header className="fixed top-0 inset-x-0 z-50 px-4 sm:px-8 py-4 flex items-center justify-between pointer-events-none">
       
-      {/* Desktop Logo */}
-      <a href="#top" onClick={go("#top")} data-testid="nav-brand" className="pointer-events-auto flex items-center gap-2">
-        <img src="/logo.png" alt="Mohd Kaif Logo" className="h-8 w-auto object-contain" />
+      {/* Desktop Logo - Increased to h-12 and aligned properly */}
+      <a href="#top" onClick={go("#top")} data-testid="nav-brand" className="pointer-events-auto flex items-center h-full">
+        <img src="/logo.png" alt="Mohd Kaif Logo" className="h-12 w-auto object-contain object-left" />
       </a>
       
       <nav className="pointer-events-auto hidden md:flex items-center gap-1 rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-xl px-2 py-1.5">
@@ -70,9 +70,9 @@ export const Navbar = ({ theme, onToggleTheme, lenis }) => {
             className="pointer-events-auto fixed inset-0 z-[70] bg-[var(--pf-bg)] flex flex-col px-8 pt-6 pb-12">
             <div className="flex items-center justify-between">
               
-              {/* Mobile Menu Logo */}
+              {/* Mobile Menu Logo - Increased size */}
               <span className="font-headline text-sm font-black tracking-tighter">
-                <img src="/logo.png" alt="Mohd Kaif Logo" className="h-8 w-auto object-contain" />
+                <img src="/logo.png" alt="Mohd Kaif Logo" className="h-10 w-auto object-contain object-left" />
               </span>
               
               <button onClick={() => { sfx.click(); setMenuOpen(false); }} data-testid="mobile-menu-close-btn" aria-label="Close menu"
