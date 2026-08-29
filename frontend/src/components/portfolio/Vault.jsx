@@ -238,7 +238,7 @@ export default function Vault() {
           {ITEMS.map((p, idx) => (
             <div key={idx} onClick={() => onCardClick(idx)} data-testid={`vault-card-${idx}`} data-cursor="hover"
               className="pf-vault-card group relative w-[75vw] sm:w-[420px] shrink-0 select-none">
-              <div className="relative overflow-hidden rounded-xl border border-[var(--pf-border)] aspect-[4/5]">
+              <div className="relative overflow-hidden rounded-xl border border-[var(--pf-border)] aspect-video">
                 <motion.div layoutId={`vault-img-${idx}`} className="absolute inset-0">
                   <img src={p.image} alt={p.title} draggable="false" className="w-full h-full object-cover pf-vault-img" />
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-r" />
