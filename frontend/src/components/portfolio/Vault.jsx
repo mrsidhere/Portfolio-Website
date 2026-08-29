@@ -244,7 +244,7 @@ export default function Vault() {
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-r" />
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-c" />
                 </motion.div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90" />
                 <div className="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-[var(--pf-glass)] backdrop-blur-md border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <ArrowUpRight size={15} className="text-white" />
                 </div>
