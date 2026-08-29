@@ -7,7 +7,6 @@ import { EMAIL } from "../../data";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-// Overriding default tags for high-end digital architect aesthetic
 const ADVANCED_TAGS = [
   "REALISTIC RENDERING",
   "RAW MOTION",
@@ -17,9 +16,8 @@ const ADVANCED_TAGS = [
   "WEBGL PHYSICS"
 ];
 
-// Custom footer links to center WhatsApp
 const FOOTER_LINKS = [
-  { label: "LINKEDIN", url: "https://linkedin.com/in/mohdkaif" }, // Replace with your real LinkedIn URL if needed
+  { label: "LINKEDIN", url: "https://linkedin.com/in/mohdkaif" },
   { label: "WHATSAPP", url: "https://wa.me/919939403048?text=Hi%20Mr.%20Sid!%20I%20would%20love%20to%20discuss%20a%20project." }
 ];
 
@@ -127,7 +125,7 @@ export default function Footer({ isTouch }) {
   };
 
   return (
-    <footer id="contact" ref={sectionRef} data-testid="footer-blackhole" className="relative min-h-[85vh] flex flex-col justify-center overflow-hidden border-t border-[var(--pf-border)]">
+    <footer id="contact" ref={sectionRef} data-testid="footer-blackhole" className="relative min-h-[85vh] flex flex-col justify-center py-20 sm:py-0 overflow-hidden border-t border-[var(--pf-border)]">
       {!isTouch && (
         <>
           <div ref={holeRef} className="pf-blackhole" aria-hidden="true" />
@@ -140,45 +138,46 @@ export default function Footer({ isTouch }) {
         </>
       )}
 
-      <div className="relative z-10 px-6 sm:px-12 text-center">
-        <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-muted)] mb-8">05 — GOT AN IDEA? LET'S BEND GRAVITY</p>
+      <div className="relative z-10 px-4 sm:px-12 w-full text-center">
+        <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-muted)] mb-6 sm:mb-8">05 — GOT AN IDEA? LET'S BEND GRAVITY</p>
+        
+        {/* Fluid mobile text sizing using vw to prevent cutoff */}
         <button ref={emailRef} onClick={copyEmail} data-testid="footer-email-copy" data-cursor="hover"
-          className="inline-block font-headline font-black tracking-tighter uppercase text-3xl sm:text-6xl lg:text-7xl leading-none will-change-transform transition-colors duration-300 hover:text-[var(--pf-accent)]">
+          className="block w-full font-headline font-black tracking-tighter uppercase text-[6vw] sm:text-6xl lg:text-7xl leading-none will-change-transform transition-colors duration-300 hover:text-[var(--pf-accent)]">
           {copied ? "COPIED ✓" : EMAIL}
         </button>
+        
         <p className="mt-6 font-mono text-[10px] tracking-[0.3em] text-[var(--pf-muted)] flex items-center justify-center gap-2">
           <Copy size={11} /> CLICK TO COPY
         </p>
       </div>
 
-      <form onSubmit={submitBrief} data-testid="contact-form" className="relative z-10 mt-16 mx-auto w-full max-w-xl px-6 grid gap-4">
-        <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-muted)] text-center mb-2">— OR SEND A PROJECT BRIEF —</p>
-        <div className="grid sm:grid-cols-2 gap-4">
+      <form onSubmit={submitBrief} data-testid="contact-form" className="relative z-10 mt-12 sm:mt-16 mx-auto w-full max-w-xl px-5 sm:px-6 grid gap-3 sm:gap-4">
+        <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-muted)] text-center mb-1 sm:mb-2">— OR SEND A PROJECT BRIEF —</p>
+        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
           <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="YOUR NAME"
             data-testid="contact-name-input" maxLength={120}
-            className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
+            className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-3.5 sm:py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
           <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="YOUR EMAIL"
             data-testid="contact-email-input" maxLength={200}
-            className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
+            className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-3.5 sm:py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
         </div>
         <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="TELL ME ABOUT YOUR PROJECT..."
           data-testid="contact-message-input" rows={4} maxLength={4000}
-          className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors resize-none placeholder:text-[var(--pf-muted)]" />
+          className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-3.5 sm:py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors resize-none placeholder:text-[var(--pf-muted)]" />
         
-        {/* Upgraded Premium Submit Button */}
         <button type="submit" disabled={sending} data-testid="contact-submit-btn" data-cursor="hover"
-          className="group flex items-center justify-center gap-3 mt-2 w-full bg-[var(--pf-accent)] text-[var(--pf-bg)] font-headline text-sm font-bold uppercase tracking-[0.15em] px-8 py-5 rounded-none transition-all duration-300 hover:scale-[1.02] disabled:opacity-50">
+          className="group flex items-center justify-center gap-3 mt-1 sm:mt-2 w-full bg-[var(--pf-accent)] text-[var(--pf-bg)] font-headline text-sm font-bold uppercase tracking-[0.15em] px-8 py-4 sm:py-5 rounded-none transition-all duration-300 hover:scale-[1.02] disabled:opacity-50">
           <span>{sending ? "TRANSMITTING..." : "LAUNCH BRIEF"}</span>
           <ArrowUpRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
         </button>
       </form>
 
-      <div className="relative z-10 mt-24 px-6 sm:px-12 flex flex-col sm:flex-row items-center justify-between gap-6 pb-8">
+      <div className="relative z-10 mt-20 sm:mt-24 px-6 sm:px-12 flex flex-col sm:flex-row items-center justify-between gap-6 pb-8">
         <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--pf-muted)] sm:w-1/3 text-center sm:text-left">
           © 2026 MOHD KAIF / MR SID — DELHI, IN
         </p>
         
-        {/* Centered Socials / WhatsApp */}
         <div className="flex gap-8 sm:w-1/3 justify-center">
           {FOOTER_LINKS.map((s) => (
             <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" data-testid={`footer-social-${s.label.toLowerCase()}`}
@@ -188,7 +187,6 @@ export default function Footer({ isTouch }) {
           ))}
         </div>
 
-        {/* Updated Slogan */}
         <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--pf-muted)] sm:w-1/3 text-center sm:text-right">
           REALITY, RENDERED.
         </p>
