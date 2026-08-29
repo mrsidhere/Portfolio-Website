@@ -1,11 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { Copy, ArrowUpRight, Send } from "lucide-react";
+import { Copy, ArrowUpRight } from "lucide-react";
 import { sfx } from "../../lib/sfx";
-import { TECH_TAGS, SOCIALS, EMAIL } from "../../data";
+import { EMAIL } from "../../data";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Overriding default tags for high-end digital architect aesthetic
+const ADVANCED_TAGS = [
+  "REALISTIC RENDERING",
+  "RAW MOTION",
+  "AI GENERATION",
+  "POST-PRODUCTION AUDIO",
+  "DYNAMIC LIGHTING",
+  "WEBGL PHYSICS"
+];
+
+// Custom footer links to center WhatsApp
+const FOOTER_LINKS = [
+  { label: "LINKEDIN", url: "https://linkedin.com/in/mohdkaif" }, // Replace with your real LinkedIn URL if needed
+  { label: "WHATSAPP", url: "https://wa.me/919939403048?text=Hi%20Mr.%20Sid!%20I%20would%20love%20to%20discuss%20a%20project." }
+];
 
 export default function Footer({ isTouch }) {
   const sectionRef = useRef(null);
@@ -40,9 +56,9 @@ export default function Footer({ isTouch }) {
     let raf, inside = false;
     const mouse = { x: 0, y: 0 };
     const pos = { x: 0, y: 0 };
-    const tags = TECH_TAGS.map((_, i) => ({
-      angle: (i / TECH_TAGS.length) * Math.PI * 2,
-      radius: 100 + (i % 3) * 45,
+    const tags = ADVANCED_TAGS.map((_, i) => ({
+      angle: (i / ADVANCED_TAGS.length) * Math.PI * 2,
+      radius: 120 + (i % 3) * 50,
       speed: 0.008 + (i % 4) * 0.004,
     }));
 
@@ -115,7 +131,7 @@ export default function Footer({ isTouch }) {
       {!isTouch && (
         <>
           <div ref={holeRef} className="pf-blackhole" aria-hidden="true" />
-          {TECH_TAGS.map((tag, i) => (
+          {ADVANCED_TAGS.map((tag, i) => (
             <span key={tag} ref={(el) => (tagRefs.current[i] = el)} aria-hidden="true"
               className="absolute top-0 left-0 z-[5] pointer-events-none font-mono text-[10px] tracking-[0.2em] px-3 py-1 rounded-full border border-[var(--pf-border)] bg-[var(--pf-glass)] backdrop-blur-sm will-change-transform transition-opacity duration-500">
               {tag}
@@ -135,36 +151,47 @@ export default function Footer({ isTouch }) {
         </p>
       </div>
 
-      <form onSubmit={submitBrief} data-testid="contact-form" className="relative z-10 mt-16 mx-auto w-full max-w-xl px-6 grid gap-3">
+      <form onSubmit={submitBrief} data-testid="contact-form" className="relative z-10 mt-16 mx-auto w-full max-w-xl px-6 grid gap-4">
         <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-muted)] text-center mb-2">— OR SEND A PROJECT BRIEF —</p>
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="grid sm:grid-cols-2 gap-4">
           <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="YOUR NAME"
             data-testid="contact-name-input" maxLength={120}
-            className="bg-[var(--pf-surface)] border border-[var(--pf-border)] rounded-xl px-4 py-3 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
+            className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
           <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="YOUR EMAIL"
             data-testid="contact-email-input" maxLength={200}
-            className="bg-[var(--pf-surface)] border border-[var(--pf-border)] rounded-xl px-4 py-3 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
+            className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
         </div>
         <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="TELL ME ABOUT YOUR PROJECT..."
           data-testid="contact-message-input" rows={4} maxLength={4000}
-          className="bg-[var(--pf-surface)] border border-[var(--pf-border)] rounded-xl px-4 py-3 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors resize-none placeholder:text-[var(--pf-muted)]" />
+          className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors resize-none placeholder:text-[var(--pf-muted)]" />
+        
+        {/* Upgraded Premium Submit Button */}
         <button type="submit" disabled={sending} data-testid="contact-submit-btn" data-cursor="hover"
-          className="flex items-center justify-center gap-2 rounded-xl bg-[var(--pf-accent)] text-white font-mono text-xs tracking-[0.25em] py-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-50">
-          {sending ? "TRANSMITTING..." : "LAUNCH BRIEF"} <Send size={13} />
+          className="group flex items-center justify-center gap-3 mt-2 w-full bg-[var(--pf-accent)] text-[var(--pf-bg)] font-headline text-sm font-bold uppercase tracking-[0.15em] px-8 py-5 rounded-none transition-all duration-300 hover:scale-[1.02] disabled:opacity-50">
+          <span>{sending ? "TRANSMITTING..." : "LAUNCH BRIEF"}</span>
+          <ArrowUpRight size={18} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
         </button>
       </form>
 
       <div className="relative z-10 mt-24 px-6 sm:px-12 flex flex-col sm:flex-row items-center justify-between gap-6 pb-8">
-        <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--pf-muted)]">© 2026 MOHD KAIF / MR SID — DELHI, IN</p>
-        <div className="flex gap-6">
-          {SOCIALS.map((s) => (
+        <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--pf-muted)] sm:w-1/3 text-center sm:text-left">
+          © 2026 MOHD KAIF / MR SID — DELHI, IN
+        </p>
+        
+        {/* Centered Socials / WhatsApp */}
+        <div className="flex gap-8 sm:w-1/3 justify-center">
+          {FOOTER_LINKS.map((s) => (
             <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" data-testid={`footer-social-${s.label.toLowerCase()}`}
               className="group font-mono text-[10px] tracking-[0.25em] flex items-center gap-1 transition-colors duration-300 hover:text-[var(--pf-accent)]">
               {s.label}<ArrowUpRight size={11} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </a>
           ))}
         </div>
-        <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--pf-muted)]">INTENT CREATES IMPACT.</p>
+
+        {/* Updated Slogan */}
+        <p className="font-mono text-[10px] tracking-[0.25em] text-[var(--pf-muted)] sm:w-1/3 text-center sm:text-right">
+          REALITY, RENDERED.
+        </p>
       </div>
     </footer>
   );
