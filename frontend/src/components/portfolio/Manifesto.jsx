@@ -4,14 +4,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const QUOTE = "The life you live tomorrow is quietly being negotiated by the choices you make today.";
+const QUOTE = "Your digital real estate is the most valuable asset you own. Architect it accordingly.";
 const ABOUT_LINES = [
-  "I am Mohd Kaif, a freelance digital architect based in Delhi.",
-  "I engineer high-performance ecosystems by merging modern",
-  "animation libraries like GSAP and Lenis with robust platforms",
-  "like WordPress and Elementor. Powered by AI workflows,",
+  "I am Mohd Kaif, a digital architect engineering high-profile web ecosystems.",
+  "While WordPress and Elementor serve as my structural foundation,",
+  "I push boundaries by integrating highly realistic AI-generated video,",
+  "raw natural movements, and fine-tuned post-production audio.",
+  "This transforms standard websites into highly immersive experiences.",
   "I don't just build static pages —",
-  "I craft digital identities.",
+  "I architect digital realities.",
 ];
 
 export default function Manifesto({ reducedMotion }) {
@@ -58,12 +59,14 @@ export default function Manifesto({ reducedMotion }) {
           <div className="space-y-1">
             {ABOUT_LINES.map((line, i) => (
               <div key={i} className="overflow-hidden">
-                <p className={`pf-about-line-inner pf-goo-hover text-base sm:text-xl leading-relaxed ${i >= 4 ? "font-bold text-[var(--pf-text)]" : "text-[var(--pf-text2)]"}`}>{line}</p>
+                {/* Dynamically bold the last two lines to emphasize the closing statement */}
+                <p className={`pf-about-line-inner pf-goo-hover text-base sm:text-xl leading-relaxed ${i >= ABOUT_LINES.length - 2 ? "font-bold text-[var(--pf-text)]" : "text-[var(--pf-text2)]"}`}>{line}</p>
               </div>
             ))}
           </div>
+          
           <div className="mt-12 flex flex-wrap gap-3">
-            {["GSAP", "LENIS", "WORDPRESS", "ELEMENTOR", "AI WORKFLOWS"].map((t) => (
+            {["CUSTOM WORDPRESS", "ELEMENTOR EXPERT", "HIGH-END DESIGN", "REALISTIC AI MEDIA", "IMMERSIVE UIs"].map((t) => (
               <span key={t} data-cursor="hover" className="font-mono text-[10px] tracking-[0.2em] px-4 py-2 rounded-full border border-[var(--pf-border)] transition-all duration-300 hover:bg-[var(--pf-accent)] hover:text-[var(--pf-bg)] hover:-translate-y-1">{t}</span>
             ))}
           </div>
