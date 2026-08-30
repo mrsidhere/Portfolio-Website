@@ -2,7 +2,40 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote } from "lucide-react";
 import { sfx } from "../../lib/sfx";
-import { TESTIMONIALS } from "../../data";
+
+// Injecting your top Fiverr reviews directly into the component
+const TESTIMONIALS = [
+  {
+    id: 1,
+    quote: "I have repeatedly worked with Mr Sid due to his great understanding of my brief, professional results, and quick communication. He makes my website elevated and visually attractive.",
+    name: "Gloria B.",
+    role: "Client — Spain"
+  },
+  {
+    id: 2,
+    quote: "Mohd is a great find! He went above and beyond to get my website perfect. He is my go-to for all things website. This is my 5th time hiring him, and I will continue to do so.",
+    name: "Kimberly Brown",
+    role: "Client — United States"
+  },
+  {
+    id: 3,
+    quote: "Mohd Kaif did an exceptional job. He was incredibly professional, listened to all my requirements, and patiently made revisions until everything was exactly the way I wanted.",
+    name: "Finn Slade",
+    role: "Client — Uganda"
+  },
+  {
+    id: 4,
+    quote: "Great working with Kaif, an absolute expert in Elementor and premium WordPress builds. Highly recommended for high-performance sites.",
+    name: "Abdalslam Ali",
+    role: "Client — Egypt"
+  },
+  {
+    id: 5,
+    quote: "I always get exactly what I ask for when working with him. Thank you for your patience, technical execution, and for truly seeing my vision.",
+    name: "ECDT",
+    role: "Client — United States"
+  }
+];
 
 export default function Testimonials() {
   const [index, setIndex] = useState(0);
