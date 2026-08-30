@@ -4,6 +4,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 export const Cursor = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
+  const [hasMoved, setHasMoved] = useState(false); // Controls initial visibility
 
   // Tracks raw mouse position
   const mouseX = useMotionValue(-100);
@@ -21,6 +22,7 @@ export const Cursor = () => {
     const move = (e) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
+      if (!hasMoved) setHasMoved(true); // Unhides cursor on first movement
     };
     const down = () => setIsClicked(true);
     const up = () => setIsClicked(false);
@@ -41,7 +43,7 @@ export const Cursor = () => {
       window.removeEventListener("mouseup", up);
       window.removeEventListener("mouseover", over);
     };
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, hasMoved]);
 
   return (
     <>
@@ -58,8 +60,8 @@ export const Cursor = () => {
           width: isHovered ? 64 : 36,
           height: isHovered ? 64 : 36,
           backgroundColor: isHovered ? "var(--pf-accent)" : "transparent",
-          opacity: isHovered ? 0.3 : 1,
-          scale: isClicked ? 0.8 : 1, // Squishes slightly on click
+          opacity: hasMoved ? (isHovered ? 0.3 : 1) : 0, // Hidden until moved
+          scale: isClicked ? 0.8 : 1, 
         }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
       />
@@ -74,8 +76,9 @@ export const Cursor = () => {
           translateY: "-50%"
         }}
         animate={{
-          scale: isHovered ? 0 : 1, // Disappears playfully on hover
-          rotate: isClicked ? 180 : 0, // Spins on click
+          scale: isHovered ? 0 : (hasMoved ? 1 : 0), // Hidden until moved
+          rotate: isClicked ? 180 : 0,
+          opacity: hasMoved ? 1 : 0, // Hidden until moved
         }}
         transition={{ type: "spring", stiffness: 400, damping: 15 }}
       >
