@@ -238,22 +238,27 @@ export default function Vault() {
           {ITEMS.map((p, idx) => (
             <div key={idx} onClick={() => onCardClick(idx)} data-testid={`vault-card-${idx}`} data-cursor="hover"
               className="pf-vault-card group relative w-[75vw] sm:w-[420px] shrink-0 select-none">
+              
               <div className="relative overflow-hidden rounded-xl border border-[var(--pf-border)] aspect-video bg-[var(--pf-surface)]">
                 <motion.div layoutId={`vault-img-${idx}`} className="absolute inset-0">
-                  {/* Reverted object-top changes here to restore original WebGL rendering */}
                   <img src={p.image} alt={p.title} draggable="false" className="w-full h-full object-cover pf-vault-img" />
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-r" />
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-c" />
                 </motion.div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90" />
-                <div className="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-[var(--pf-glass)] backdrop-blur-md border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ArrowUpRight size={15} className="text-white" />
+                
+                {/* THE FIX: Fully Theme-Adaptive Overlays - No more hardcoded blacks/whites */}
+                <div className="absolute inset-0 bg-[var(--pf-text)]/5 group-hover:bg-transparent transition-colors duration-500" />
+                <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[var(--pf-bg)] via-[var(--pf-bg)]/80 to-transparent opacity-95" />
+                
+                <div className="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-[var(--pf-surface)]/80 backdrop-blur-md border border-[var(--pf-border)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ArrowUpRight size={15} className="text-[var(--pf-text)]" />
                 </div>
                 <div className="absolute bottom-0 inset-x-0 p-5">
-                  <p className="font-mono text-[9px] tracking-[0.3em] text-white/60 mb-1">{p.year} — {p.category}</p>
-                  <h3 className="font-headline text-lg sm:text-2xl font-bold tracking-tight text-white">{p.title}</h3>
+                  <p className="font-mono text-[9px] tracking-[0.3em] text-[var(--pf-accent)] mb-1">{p.year} — {p.category}</p>
+                  <h3 className="font-headline text-lg sm:text-2xl font-bold tracking-tight text-[var(--pf-text)]">{p.title}</h3>
                 </div>
               </div>
+
             </div>
           ))}
         </div>
@@ -268,24 +273,22 @@ export default function Vault() {
               <X size={18} />
             </button>
             <div className="min-h-screen flex flex-col lg:flex-row">
-              {/* Changed object-cover to object-contain and added padding to perfectly frame the screenshot */}
               <motion.div layoutId={`vault-img-${expanded}`} className="lg:w-3/5 h-[50vh] lg:h-screen relative overflow-hidden bg-[var(--pf-surface)] border-b lg:border-b-0 lg:border-r border-[var(--pf-border)] flex items-center justify-center p-6 sm:p-12">
                 <img src={ITEMS[expanded].image} alt={ITEMS[expanded].title} className="w-full max-h-full object-contain rounded-lg shadow-2xl border border-[var(--pf-border)]" />
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="lg:w-2/5 flex flex-col justify-center p-8 sm:p-16">
                 <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-accent)] mb-4">{ITEMS[expanded].year} — {ITEMS[expanded].category}</p>
-                <h3 className="font-headline text-3xl sm:text-5xl font-black tracking-tighter uppercase mb-8">{ITEMS[expanded].title}</h3>
+                <h3 className="font-headline text-3xl sm:text-5xl font-black tracking-tighter uppercase mb-8 text-[var(--pf-text)]">{ITEMS[expanded].title}</h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[var(--pf-text2)] max-w-md">{ITEMS[expanded].description}</p>
                 
-                {/* Premium Double Button Layout */}
-                <div className="flex flex-col sm:flex-row gap-4 mt-10">
+                <div className="flex flex-col xl:flex-row gap-4 mt-10">
                   {ITEMS[expanded].link && (
                     <a 
                       href={ITEMS[expanded].link} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="group flex items-center justify-center gap-3 w-full sm:w-max border border-[var(--pf-accent)] text-[var(--pf-accent)] font-headline text-xs font-bold uppercase tracking-[0.15em] px-8 py-4 rounded-none transition-all duration-300 hover:bg-[var(--pf-accent)] hover:text-[var(--pf-bg)]"
+                      className="group flex items-center justify-center gap-3 w-full xl:w-max border border-[var(--pf-accent)] text-[var(--pf-accent)] font-headline text-xs font-bold uppercase tracking-[0.15em] px-8 py-4 rounded-none transition-all duration-300 hover:bg-[var(--pf-accent)] hover:text-[var(--pf-bg)]"
                     >
                       <span>VIEW LIVE REALITY</span>
                       <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -297,7 +300,7 @@ export default function Vault() {
                     target="_blank" 
                     rel="noopener noreferrer"
                     aria-label="Hire Mr. Sid - Open WhatsApp chat"
-                    className="group flex items-center justify-center gap-3 w-full sm:w-max bg-[var(--pf-accent)] text-[var(--pf-bg)] font-headline text-xs font-bold uppercase tracking-[0.15em] px-8 py-4 rounded-none transition-all duration-300 hover:scale-[1.02]"
+                    className="group flex items-center justify-center gap-3 w-full xl:w-max bg-[var(--pf-accent)] text-[var(--pf-bg)] font-headline text-xs font-bold uppercase tracking-[0.15em] px-8 py-4 rounded-none transition-all duration-300 hover:scale-[1.02]"
                   >
                     <span>DISCUSS PROJECT</span>
                     <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
