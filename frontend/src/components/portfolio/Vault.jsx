@@ -239,16 +239,15 @@ export default function Vault() {
             <div key={idx} onClick={() => onCardClick(idx)} data-testid={`vault-card-${idx}`} data-cursor="hover"
               className="pf-vault-card group relative w-[75vw] sm:w-[420px] shrink-0 select-none">
               
-              <div className="relative overflow-hidden rounded-xl border border-[var(--pf-border)] aspect-video bg-[var(--pf-surface)]">
+              <div className="relative overflow-hidden rounded-xl border border-[var(--pf-border)] aspect-video bg-transparent">
                 <motion.div layoutId={`vault-img-${idx}`} className="absolute inset-0">
                   <img src={p.image} alt={p.title} draggable="false" className="w-full h-full object-cover pf-vault-img" />
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-r" />
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-c" />
                 </motion.div>
                 
-                {/* THE FIX: Fully Theme-Adaptive Overlays - No more hardcoded blacks/whites */}
-                <div className="absolute inset-0 bg-[var(--pf-text)]/5 group-hover:bg-transparent transition-colors duration-500" />
-                <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-[var(--pf-bg)] via-[var(--pf-bg)]/80 to-transparent opacity-95" />
+                {/* CLEAN OVERLAY: Just a tight gradient at the very bottom to pop the text */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--pf-bg)] to-transparent opacity-90" />
                 
                 <div className="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-[var(--pf-surface)]/80 backdrop-blur-md border border-[var(--pf-border)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <ArrowUpRight size={15} className="text-[var(--pf-text)]" />
