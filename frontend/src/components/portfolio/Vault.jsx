@@ -240,9 +240,10 @@ export default function Vault() {
               className="pf-vault-card group relative w-[75vw] sm:w-[420px] shrink-0 select-none">
               <div className="relative overflow-hidden rounded-xl border border-[var(--pf-border)] aspect-video bg-[var(--pf-surface)]">
                 <motion.div layoutId={`vault-img-${idx}`} className="absolute inset-0">
-                  <img src={p.image} alt={p.title} draggable="false" className="w-full h-full object-cover object-top pf-vault-img" />
-                  <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-r object-top" />
-                  <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-c object-top" />
+                  {/* Reverted object-top changes here to restore original WebGL rendering */}
+                  <img src={p.image} alt={p.title} draggable="false" className="w-full h-full object-cover pf-vault-img" />
+                  <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-r" />
+                  <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-c" />
                 </motion.div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-90" />
                 <div className="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-[var(--pf-glass)] backdrop-blur-md border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -267,9 +268,9 @@ export default function Vault() {
               <X size={18} />
             </button>
             <div className="min-h-screen flex flex-col lg:flex-row">
-              {/* Added border and background to frame the image, plus object-top to show the header */}
-              <motion.div layoutId={`vault-img-${expanded}`} className="lg:w-3/5 h-[50vh] lg:h-screen relative overflow-hidden bg-[var(--pf-surface)] border-b lg:border-b-0 lg:border-r border-[var(--pf-border)]">
-                <img src={ITEMS[expanded].image} alt={ITEMS[expanded].title} className="w-full h-full object-cover object-top" />
+              {/* Changed object-cover to object-contain and added padding to perfectly frame the screenshot */}
+              <motion.div layoutId={`vault-img-${expanded}`} className="lg:w-3/5 h-[50vh] lg:h-screen relative overflow-hidden bg-[var(--pf-surface)] border-b lg:border-b-0 lg:border-r border-[var(--pf-border)] flex items-center justify-center p-6 sm:p-12">
+                <img src={ITEMS[expanded].image} alt={ITEMS[expanded].title} className="w-full max-h-full object-contain rounded-lg shadow-2xl border border-[var(--pf-border)]" />
               </motion.div>
               <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="lg:w-2/5 flex flex-col justify-center p-8 sm:p-16">
@@ -277,9 +278,8 @@ export default function Vault() {
                 <h3 className="font-headline text-3xl sm:text-5xl font-black tracking-tighter uppercase mb-8">{ITEMS[expanded].title}</h3>
                 <p className="text-base sm:text-lg leading-relaxed text-[var(--pf-text2)] max-w-md">{ITEMS[expanded].description}</p>
                 
-                {/* Dual Premium Buttons Layout */}
+                {/* Premium Double Button Layout */}
                 <div className="flex flex-col sm:flex-row gap-4 mt-10">
-                  {/* View Live Reality Button - Uses Link from data.js */}
                   {ITEMS[expanded].link && (
                     <a 
                       href={ITEMS[expanded].link} 
@@ -292,7 +292,6 @@ export default function Vault() {
                     </a>
                   )}
 
-                  {/* Discuss Project Button - Connects to WhatsApp */}
                   <a 
                     href={`https://wa.me/919939403048?text=Hi%20Mr.%20Sid!%20I%20was%20just%20looking%20at%20${ITEMS[expanded].title}%20on%20your%20portfolio%20and%20I%20would%20love%20to%20discuss%20a%20project.`} 
                     target="_blank" 
