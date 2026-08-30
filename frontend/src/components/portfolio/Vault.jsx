@@ -246,15 +246,17 @@ export default function Vault() {
                   <img src={p.image} alt="" draggable="false" aria-hidden="true" className="pf-rgb-layer pf-rgb-c" />
                 </motion.div>
                 
-                {/* CLEAN OVERLAY: Just a tight gradient at the very bottom to pop the text */}
-                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--pf-bg)] to-transparent opacity-90" />
+                {/* LOCKED CINEMATIC OVERLAY: Always dark, highly legible, keeps top of image clear */}
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
                 
-                <div className="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-[var(--pf-surface)]/80 backdrop-blur-md border border-[var(--pf-border)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ArrowUpRight size={15} className="text-[var(--pf-text)]" />
+                <div className="absolute top-4 right-4 w-9 h-9 grid place-items-center rounded-full bg-black/40 backdrop-blur-md border border-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ArrowUpRight size={15} className="text-white" />
                 </div>
-                <div className="absolute bottom-0 inset-x-0 p-5">
-                  <p className="font-mono text-[9px] tracking-[0.3em] text-[var(--pf-accent)] mb-1">{p.year} — {p.category}</p>
-                  <h3 className="font-headline text-lg sm:text-2xl font-bold tracking-tight text-[var(--pf-text)]">{p.title}</h3>
+                <div className="absolute bottom-0 inset-x-0 p-5 pointer-events-none">
+                  {/* Text locked to white for perfect contrast against the dark shadow */}
+                  <p className="font-mono text-[9px] tracking-[0.3em] text-white/70 mb-1">{p.year} — {p.category}</p>
+                  <h3 className="font-headline text-lg sm:text-2xl font-bold tracking-tight text-white">{p.title}</h3>
                 </div>
               </div>
 
@@ -275,6 +277,8 @@ export default function Vault() {
               <motion.div layoutId={`vault-img-${expanded}`} className="lg:w-3/5 h-[50vh] lg:h-screen relative overflow-hidden bg-[var(--pf-surface)] border-b lg:border-b-0 lg:border-r border-[var(--pf-border)] flex items-center justify-center p-6 sm:p-12">
                 <img src={ITEMS[expanded].image} alt={ITEMS[expanded].title} className="w-full max-h-full object-contain rounded-lg shadow-2xl border border-[var(--pf-border)]" />
               </motion.div>
+              
+              {/* Modal text remains perfectly responsive to light/dark themes */}
               <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="lg:w-2/5 flex flex-col justify-center p-8 sm:p-16">
                 <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-accent)] mb-4">{ITEMS[expanded].year} — {ITEMS[expanded].category}</p>
