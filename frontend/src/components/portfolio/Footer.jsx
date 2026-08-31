@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { toast } from "sonner";
 import { Copy, ArrowUpRight } from "lucide-react";
 import { sfx } from "../../lib/sfx";
 import { EMAIL } from "../../data";
-
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 const ADVANCED_TAGS = [
   "REALISTIC RENDERING",
@@ -34,11 +31,31 @@ export default function Footer({ isTouch }) {
     e.preventDefault();
     if (sending) return;
     setSending(true);
+
+    const formData = new FormData(e.target);
+    // Your specific Web3Forms Access Key
+    formData.append("access_key", "cdd55fcf-3a63-47b6-8615-e7b967819f69");
+
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
     try {
-      await axios.post(`${API}/contact`, form);
-      sfx.merge();
-      toast.success("Brief received — I'll get back to you soon!");
-      setForm({ name: "", email: "", message: "" });
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: json
+      }).then((res) => res.json());
+
+      if (res.success) {
+        sfx.merge();
+        toast.success("Brief received — I'll get back to you soon!");
+        setForm({ name: "", email: "", message: "" });
+      } else {
+        toast.error("Transmission failed. Please try again.");
+      }
     } catch {
       toast.error("Couldn't send right now. Copy the email below instead!");
     } finally {
@@ -155,14 +172,14 @@ export default function Footer({ isTouch }) {
       <form onSubmit={submitBrief} data-testid="contact-form" className="relative z-10 mt-12 sm:mt-16 mx-auto w-full max-w-xl px-5 sm:px-6 grid gap-3 sm:gap-4">
         <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-muted)] text-center mb-1 sm:mb-2">— OR SEND A PROJECT BRIEF —</p>
         <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-          <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="YOUR NAME"
+          <input required name="name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="YOUR NAME"
             data-testid="contact-name-input" maxLength={120}
             className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-3.5 sm:py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
-          <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="YOUR EMAIL"
+          <input required type="email" name="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="YOUR EMAIL"
             data-testid="contact-email-input" maxLength={200}
             className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-3.5 sm:py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors placeholder:text-[var(--pf-muted)]" />
         </div>
-        <textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="TELL ME ABOUT YOUR PROJECT..."
+        <textarea required name="message" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="TELL ME ABOUT YOUR PROJECT..."
           data-testid="contact-message-input" rows={4} maxLength={4000}
           className="bg-transparent border border-[var(--pf-border)] rounded-none px-4 py-3.5 sm:py-4 font-mono text-xs tracking-[0.15em] outline-none focus:border-[var(--pf-accent)] transition-colors resize-none placeholder:text-[var(--pf-muted)]" />
         
