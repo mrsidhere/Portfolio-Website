@@ -36,12 +36,21 @@ function App() {
 
   useEffect(() => {
     if (reducedMotion) return;
-    const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+    
+    // Added autoSleep: true for maximum background performance
+    const lenis = new Lenis({ 
+      lerp: 0.09, 
+      smoothWheel: true,
+      autoSleep: true 
+    });
+    
     lenisRef.current = lenis;
     lenis.on("scroll", ScrollTrigger.update);
+    
     const raf = (time) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
+    
     return () => {
       gsap.ticker.remove(raf);
       lenis.destroy();
