@@ -4,7 +4,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const QUOTE = "Your digital real estate is the most valuable asset you own. Architect it accordingly.";
+const QUOTE = "The life you live tomorrow is quietly being negotiated by the choices you make today.";
 const ABOUT_LINES = [
   "I am Mohd Kaif, a digital architect engineering high-profile web ecosystems.",
   "While WordPress and Elementor serve as my structural foundation,",
