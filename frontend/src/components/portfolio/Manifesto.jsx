@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import MrSidReveal from "./MrSidReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,7 +56,11 @@ export default function Manifesto({ reducedMotion }) {
         </blockquote>
 
         <div className="pf-about" data-testid="about-text">
-          <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-accent)] mb-8">WHO IS MR SID</p>
+          {/* Integrated Kinetic Reveal */}
+          <div className="mb-8 font-mono text-[10px] tracking-[0.35em]">
+            <MrSidReveal />
+          </div>
+          
           <div className="space-y-1">
             {ABOUT_LINES.map((line, i) => (
               <div key={i} className="overflow-hidden">
