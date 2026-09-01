@@ -1,18 +1,24 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import gsap from "gsap";
-import { useDevice } from "@/hooks/useDevice"; // Disables effect on mobile
+import { useDevice } from "@/hooks/useDevice";
 
 export default function MrSidReveal() {
   const { isTouch } = useDevice();
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef(null);
   const chRedRef = useRef(null);
   const chCyanRef = useRef(null);
   const chBaseRef = useRef(null);
   const triggerRef = useRef(null);
 
+  // Ensure portal only renders on client side
   useEffect(() => {
-    // Abort on mobile to preserve scrolling performance
-    if (isTouch) return; 
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isTouch || !mounted) return; 
 
     const ctx = gsap.context(() => {
       const xRed = gsap.quickTo(chRedRef.current, "x", { duration: 0.1, ease: "power3.out" });
@@ -89,18 +95,17 @@ export default function MrSidReveal() {
     });
 
     return () => ctx.revert();
-  }, [isTouch]);
+  }, [isTouch, mounted]);
 
   return (
     <>
-      {/* 3D Kinetic Image Container */}
-      {!isTouch && (
+      {/* Teleport the image to the document body to prevent grid trapping */}
+      {mounted && !isTouch && createPortal(
         <div 
           ref={containerRef} 
           className="pointer-events-none fixed top-0 left-0 w-[320px] h-[440px] z-[9000]"
           style={{ clipPath: "polygon(0 50%, 100% 50%, 100% 50%, 0 50%)" }}
         >
-          {/* Red Glitch Channel */}
           <img 
             ref={chRedRef} 
             src="/mrsid.jpg" 
@@ -108,7 +113,6 @@ export default function MrSidReveal() {
             className="absolute inset-0 w-full h-full object-cover mix-blend-screen rounded opacity-0 z-30"
             style={{ filter: "grayscale(100%) sepia(100%) hue-rotate(300deg) saturate(300%) contrast(1.2)" }} 
           />
-          {/* Cyan Glitch Channel */}
           <img 
             ref={chCyanRef} 
             src="/mrsid.jpg" 
@@ -116,7 +120,6 @@ export default function MrSidReveal() {
             className="absolute inset-0 w-full h-full object-cover mix-blend-screen rounded opacity-0 z-20"
             style={{ filter: "grayscale(100%) sepia(100%) hue-rotate(150deg) saturate(300%) contrast(1.2)" }} 
           />
-          {/* Base Sharp Image */}
           <img 
             ref={chBaseRef} 
             src="/mrsid.jpg" 
@@ -124,10 +127,11 @@ export default function MrSidReveal() {
             className="absolute inset-0 w-full h-full object-cover rounded opacity-0 z-10"
             style={{ filter: "grayscale(20%) contrast(1.1)" }} 
           />
-        </div>
+        </div>,
+        document.body
       )}
 
-      {/* The Text Trigger inside your Manifesto */}
+      {/* The Text Trigger */}
       <span 
         ref={triggerRef}
         className="text-[var(--pf-accent,#3D8BFF)] hover:text-white transition-colors duration-300 cursor-pointer font-bold uppercase tracking-widest relative z-10 inline-block"
