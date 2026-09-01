@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "@/App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -15,8 +16,29 @@ import Vault from "@/components/portfolio/Vault";
 import ProcessEngine from "@/components/portfolio/ProcessEngine";
 import Testimonials from "@/components/portfolio/Testimonials";
 import Footer from "@/components/portfolio/Footer";
+import NotFound from "@/NotFound"; // If inside src/pages/NotFound, change to: "@/pages/NotFound"
 
 gsap.registerPlugin(ScrollTrigger);
+
+function MainPortfolio({ isTouch, reducedMotion, theme, ready, setReady, setTheme, lenisRef }) {
+  return (
+    <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
+      {!isTouch && <Cursor />}
+      <Preloader onDone={() => setReady(true)} />
+      <Toaster position="bottom-center" theme={theme} />
+      <Navbar theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} lenis={lenisRef} />
+      <main>
+        <HeroPhysics staticMode={isTouch || reducedMotion} theme={theme} ready={ready} />
+        <Manifesto reducedMotion={reducedMotion} />
+        <Marquee />
+        <Vault />
+        <ProcessEngine isTouch={isTouch} />
+        <Testimonials />
+        <Footer isTouch={isTouch} />
+      </main>
+    </div>
+  );
+}
 
 function App() {
   const { isTouch, reducedMotion } = useDevice();
@@ -37,10 +59,9 @@ function App() {
   useEffect(() => {
     if (reducedMotion) return;
     
-    // Added autoSleep: true for maximum background performance
     const lenis = new Lenis({ 
       lerp: 0.09, 
-      smoothWheel: true,
+      smoothWheel: true, 
       autoSleep: true 
     });
     
@@ -59,21 +80,26 @@ function App() {
   }, [reducedMotion]);
 
   return (
-    <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
-      {!isTouch && <Cursor />}
-      <Preloader onDone={() => setReady(true)} />
-      <Toaster position="bottom-center" theme={theme} />
-      <Navbar theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} lenis={lenisRef} />
-      <main>
-        <HeroPhysics staticMode={isTouch || reducedMotion} theme={theme} ready={ready} />
-        <Manifesto reducedMotion={reducedMotion} />
-        <Marquee />
-        <Vault />
-        <ProcessEngine isTouch={isTouch} />
-        <Testimonials />
-        <Footer isTouch={isTouch} />
-      </main>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <MainPortfolio
+              isTouch={isTouch}
+              reducedMotion={reducedMotion}
+              theme={theme}
+              ready={ready}
+              setReady={setReady}
+              setTheme={setTheme}
+              lenisRef={lenisRef}
+            />
+          }
+        />
+        {/* Wildcard catch-all for broken/unknown URLs */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
