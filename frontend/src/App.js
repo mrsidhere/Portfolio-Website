@@ -16,14 +16,13 @@ import Vault from "@/components/portfolio/Vault";
 import ProcessEngine from "@/components/portfolio/ProcessEngine";
 import Testimonials from "@/components/portfolio/Testimonials";
 import Footer from "@/components/portfolio/Footer";
-import NotFound from "@/NotFound"; // If inside src/pages/NotFound, change to: "@/pages/NotFound"
+import NotFound from "@/NotFound"; // Ensure correct path to NotFound.jsx
 
 gsap.registerPlugin(ScrollTrigger);
 
-function MainPortfolio({ isTouch, reducedMotion, theme, ready, setReady, setTheme, lenisRef }) {
+function MainPortfolio({ theme, ready, setReady, setTheme, lenisRef, isTouch, reducedMotion }) {
   return (
-    <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
-      {!isTouch && <Cursor />}
+    <>
       <Preloader onDone={() => setReady(true)} />
       <Toaster position="bottom-center" theme={theme} />
       <Navbar theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} lenis={lenisRef} />
@@ -36,7 +35,7 @@ function MainPortfolio({ isTouch, reducedMotion, theme, ready, setReady, setThem
         <Testimonials />
         <Footer isTouch={isTouch} />
       </main>
-    </div>
+    </>
   );
 }
 
@@ -60,9 +59,11 @@ function App() {
     if (reducedMotion) return;
     
     const lenis = new Lenis({ 
-      lerp: 0.09, 
+      lerp: 0.08, 
       smoothWheel: true, 
-      autoSleep: true 
+      smoothTouch: false, // CRITICAL: Allows frictionless native scrolling on phones
+      syncTouch: false,
+      autoSleep: false // Prevents the engine from "falling asleep" and feeling stuck
     });
     
     lenisRef.current = lenis;
@@ -81,24 +82,28 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <MainPortfolio
-              isTouch={isTouch}
-              reducedMotion={reducedMotion}
-              theme={theme}
-              ready={ready}
-              setReady={setReady}
-              setTheme={setTheme}
-              lenisRef={lenisRef}
-            />
-          }
-        />
-        {/* Wildcard catch-all for broken/unknown URLs */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
+        {/* Cursor is now global and will render on all routes including 404 */}
+        {!isTouch && <Cursor />}
+        
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MainPortfolio
+                theme={theme}
+                ready={ready}
+                setReady={setReady}
+                setTheme={setTheme}
+                lenisRef={lenisRef}
+                isTouch={isTouch}
+                reducedMotion={reducedMotion}
+              />
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }
