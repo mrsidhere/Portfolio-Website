@@ -47,12 +47,14 @@ export default function Manifesto({ reducedMotion }) {
 
       <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
         <blockquote className="pf-quote" data-testid="manifesto-quote">
-          <p className="font-serif-accent italic text-2xl sm:text-4xl lg:text-[2.6rem] leading-snug text-[var(--pf-text)]">
+          <p className="font-serif-accent italic text-2xl sm:text-4xl lg:text-[2.6rem] leading-snug text-[var(--pf-text)] flex flex-wrap">
             {QUOTE.split(" ").map((w, i) => (
-              <span key={i} className="pf-quote-word inline-block will-change-transform mr-[0.28em]">{w}</span>
+              <span key={i} className="pf-quote-word inline-block will-change-transform mr-2 sm:mr-3 mb-1 sm:mb-2">
+                {w}
+              </span>
             ))}
           </p>
-          <div className="mt-10 h-px w-24 bg-[var(--pf-accent)]" />
+          <div className="mt-8 h-px w-24 bg-[var(--pf-accent)]" />
         </blockquote>
 
         <div className="pf-about" data-testid="about-text">
