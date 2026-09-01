@@ -109,7 +109,7 @@ export default function MrSidReveal() {
                 height: atomH,
                 left: cell.c * atomW,
                 top: cell.r * atomH,
-                backgroundImage: "url('/mrsid.png')", // Must match your transparent cutout file exactly
+                backgroundImage: "url('/mrsid.jpg')", // Must match your transparent cutout file exactly
                 backgroundSize: `${width}px ${height}px`,
                 backgroundPosition: `-${cell.c * atomW}px -${cell.r * atomH}px`,
                 backgroundRepeat: "no-repeat",
