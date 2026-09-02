@@ -22,10 +22,11 @@ export default function Manifesto({ reducedMotion }) {
   useEffect(() => {
     if (reducedMotion) return;
     const ctx = gsap.context(() => {
+      // Clean, elegant fade-up without chaotic layout-breaking X/Y scattering
       gsap.fromTo(".pf-quote-word",
-        { x: () => gsap.utils.random(-260, 260), y: () => gsap.utils.random(-180, 180), opacity: 0, rotation: () => gsap.utils.random(-40, 40), filter: "blur(6px)" },
-        { x: 0, y: 0, opacity: 1, rotation: 0, filter: "blur(0px)", ease: "power2.out", stagger: { each: 0.02, from: "random" },
-          scrollTrigger: { trigger: ".pf-quote", start: "top 85%", end: "top 25%", scrub: 1.2 } });
+        { y: 20, opacity: 0, filter: "blur(4px)" },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power2.out", stagger: 0.02,
+          scrollTrigger: { trigger: ".pf-quote", start: "top 85%" } });
 
       gsap.fromTo(".pf-about-line-inner",
         { yPercent: 115 },
@@ -47,18 +48,16 @@ export default function Manifesto({ reducedMotion }) {
 
       <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
         <blockquote className="pf-quote" data-testid="manifesto-quote">
-          <p className="font-serif-accent italic text-2xl sm:text-4xl lg:text-[2.6rem] leading-snug text-[var(--pf-text)] flex flex-wrap">
+          {/* Flex wrap and gap safely handle the spacing without overlapping */}
+          <p className="font-serif-accent italic text-2xl sm:text-4xl lg:text-[2.6rem] leading-snug text-[var(--pf-text)] flex flex-wrap gap-x-[0.25em] gap-y-2">
             {QUOTE.split(" ").map((w, i) => (
-              <span key={i} className="pf-quote-word inline-block will-change-transform mr-2 sm:mr-3 mb-1 sm:mb-2">
-                {w}
-              </span>
+              <span key={i} className="pf-quote-word inline-block will-change-transform">{w}</span>
             ))}
           </p>
-          <div className="mt-8 h-px w-24 bg-[var(--pf-accent)]" />
+          <div className="mt-10 h-px w-24 bg-[var(--pf-accent)]" />
         </blockquote>
 
         <div className="pf-about" data-testid="about-text">
-          {/* Integrated Kinetic Reveal */}
           <div className="mb-8 font-mono text-[10px] tracking-[0.35em]">
             <MrSidReveal />
           </div>
@@ -66,7 +65,6 @@ export default function Manifesto({ reducedMotion }) {
           <div className="space-y-1">
             {ABOUT_LINES.map((line, i) => (
               <div key={i} className="overflow-hidden">
-                {/* Dynamically bold the last two lines to emphasize the closing statement */}
                 <p className={`pf-about-line-inner pf-goo-hover text-base sm:text-xl leading-relaxed ${i >= ABOUT_LINES.length - 2 ? "font-bold text-[var(--pf-text)]" : "text-[var(--pf-text2)]"}`}>{line}</p>
               </div>
             ))}
