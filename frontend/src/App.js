@@ -16,7 +16,7 @@ import Vault from "@/components/portfolio/Vault";
 import ProcessEngine from "@/components/portfolio/ProcessEngine";
 import Testimonials from "@/components/portfolio/Testimonials";
 import Footer from "@/components/portfolio/Footer";
-import NotFound from "@/NotFound"; // Ensure correct path to NotFound.jsx
+import NotFound from "@/NotFound";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,10 +27,12 @@ function MainPortfolio({ theme, ready, setReady, setTheme, lenisRef, isTouch, re
       <Toaster position="bottom-center" theme={theme} />
       <Navbar theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} lenis={lenisRef} />
       <main>
+        {/* Passed staticMode to HeroPhysics to kill heavy scrub on mobile */}
         <HeroPhysics staticMode={isTouch || reducedMotion} theme={theme} ready={ready} />
         <Manifesto reducedMotion={reducedMotion} />
         <Marquee />
         <Vault />
+        {/* Passed isTouch to completely kill Matter.js physics on mobile */}
         <ProcessEngine isTouch={isTouch} />
         <Testimonials />
         <Footer isTouch={isTouch} />
@@ -39,7 +41,7 @@ function MainPortfolio({ theme, ready, setReady, setTheme, lenisRef, isTouch, re
   );
 }
 
-function App() {
+export default function App() {
   const { isTouch, reducedMotion } = useDevice();
   const lenisRef = useRef(null);
   const [theme, setTheme] = useState(() => localStorage.getItem("pf-theme") || "dark");
@@ -61,14 +63,15 @@ function App() {
     const lenis = new Lenis({ 
       lerp: 0.08, 
       smoothWheel: true, 
-      smoothTouch: false, // CRITICAL: Allows frictionless native scrolling on phones
+      smoothTouch: false, // Prevents custom scroll on mobile
       syncTouch: false,
-      autoSleep: false // Prevents the engine from "falling asleep" and feeling stuck
+      autoSleep: false
     });
     
     lenisRef.current = lenis;
     lenis.on("scroll", ScrollTrigger.update);
     
+    // Sync GSAP ticker with Lenis frame rate
     const raf = (time) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
@@ -83,9 +86,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
-        {/* Cursor is now global and will render on all routes including 404 */}
         {!isTouch && <Cursor />}
-        
         <Routes>
           <Route
             path="/"
@@ -107,5 +108,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
