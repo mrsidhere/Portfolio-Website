@@ -13,7 +13,6 @@ export default function MrSidReveal() {
     setMounted(true);
   }, []);
 
-  // Restored the high-density particle grid for the "Atom" effect
   const cols = 15;
   const rows = 20;
   const width = 300;
@@ -25,37 +24,58 @@ export default function MrSidReveal() {
     if (!mounted) return;
     
     const atoms = atomsRef.current.filter(Boolean);
+    
+    // Split the grid: Top 80% is solid, Bottom 20% is dust to hide the cut
+    const solidAtoms = atoms.filter((_, i) => Math.floor(i / cols) < rows - 4);
+    const dustAtoms = atoms.filter((_, i) => Math.floor(i / cols) >= rows - 4);
+
     const ctx = gsap.context(() => {
       if (isRevealed) {
-        // The Assembly: Powerful, center-out magnetic convergence
-        gsap.to(atoms, {
+        // 1. ASSEMBLE THE SOLID CORE (Top portion)
+        gsap.to(solidAtoms, {
           x: 0, y: 0, z: 0,
           rotationX: 0, rotationY: 0, rotationZ: 0,
-          scale: 1.01, // Fractional overlap completely hides the "cuts"
+          scale: 1.01, 
           opacity: 1,
           duration: 1.2,
           ease: "power4.out",
           stagger: { amount: 0.6, from: "center" },
-          force3D: true, // GPU Acceleration
+          force3D: true,
           overwrite: "auto"
         });
+
+        // 2. THE INCOMPLETE RENDER (Bottom portion hides the flat edge)
+        gsap.to(dustAtoms, {
+          x: () => gsap.utils.random(-30, 30),
+          y: () => gsap.utils.random(10, 50),
+          z: () => gsap.utils.random(-50, 50),
+          rotationZ: () => gsap.utils.random(-20, 20),
+          scale: () => gsap.utils.random(0.5, 1.01),
+          opacity: () => gsap.utils.random(0.1, 0.7),
+          duration: () => gsap.utils.random(1.5, 3),
+          ease: "sine.inOut",
+          repeat: -1, // Makes the dust float infinitely
+          yoyo: true, // Floats back and forth smoothly
+          stagger: { amount: 0.5, from: "random" },
+          force3D: true,
+          overwrite: "auto"
+        });
+
       } else {
-        // The Dispersion: Explodes toward the camera and shrinks into dust
-        atoms.forEach((atom) => {
-          gsap.to(atom, {
-            x: gsap.utils.random(-800, 800),
-            y: gsap.utils.random(-800, 800),
-            z: gsap.utils.random(200, 1000), // Flies out toward the user
-            rotationX: gsap.utils.random(-360, 360),
-            rotationY: gsap.utils.random(-360, 360),
-            rotationZ: gsap.utils.random(-180, 180),
-            scale: 0, // Shrinks into nothingness
-            opacity: 0,
-            duration: 0.8,
-            ease: "expo.in",
-            force3D: true, // GPU Acceleration
-            overwrite: "auto"
-          });
+        // THE DISPERSION: Everything explodes toward the camera
+        gsap.to(atoms, {
+          x: () => gsap.utils.random(-800, 800),
+          y: () => gsap.utils.random(-800, 800),
+          z: () => gsap.utils.random(200, 1000), 
+          rotationX: () => gsap.utils.random(-360, 360),
+          rotationY: () => gsap.utils.random(-360, 360),
+          rotationZ: () => gsap.utils.random(-180, 180),
+          scale: 0, 
+          opacity: 0,
+          duration: 0.8,
+          ease: "expo.in",
+          force3D: true, 
+          overwrite: "auto"
         });
       }
     });
@@ -118,7 +138,6 @@ export default function MrSidReveal() {
       <p 
         className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-accent,#3D8BFF)] hover:text-white transition-colors duration-300 cursor-pointer w-fit relative z-10 uppercase m-0 p-0"
         data-cursor="hover"
-        // Works seamlessly on Desktop (Hover) and Mobile (Tap)
         onMouseEnter={() => !isTouch && setIsRevealed(true)}
         onMouseLeave={() => !isTouch && setIsRevealed(false)}
         onClick={() => isTouch && setIsRevealed(!isRevealed)}
