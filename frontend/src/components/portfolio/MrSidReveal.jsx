@@ -9,51 +9,50 @@ export default function MrSidReveal() {
   const [isRevealed, setIsRevealed] = useState(false);
   const atomsRef = useRef([]);
 
-  // Ensure portal mounts safely on the client to prevent SSR errors
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Grid Configuration for the atoms
-  const cols = 14;
-  const rows = 19;
-  const width = 280;
-  const height = 380;
+  // Performance Fix: Reduced grid complexity (48 pieces instead of 300+)
+  // This guarantees zero scroll lag while keeping the animation aggressive.
+  const cols = 6;
+  const rows = 8;
+  const width = 300;
+  const height = 400;
   const atomW = width / cols;
   const atomH = height / rows;
 
-  // Assembly & Dispersion Engine (Optimized for zero lag)
   useEffect(() => {
     if (!mounted) return;
     
     const atoms = atomsRef.current.filter(Boolean);
     const ctx = gsap.context(() => {
       if (isRevealed) {
-        // Assemble smoothly into the photo
+        // Aggressive Magnetic Assembly
         gsap.to(atoms, {
           x: 0, y: 0, z: 0,
           rotationX: 0, rotationY: 0, rotationZ: 0,
           scale: 1, opacity: 1,
-          duration: 1.2,
-          ease: "expo.out",
-          stagger: { amount: 0.4, from: "random" },
-          force3D: true, // Hardware acceleration to prevent website hanging
+          duration: 1.4,
+          ease: "back.out(1.2)", // Gives it a powerful "snap" into place
+          stagger: { amount: 0.3, from: "edges" },
+          force3D: true, // Hardware acceleration active
           overwrite: "auto"
         });
       } else {
-        // Explode smoothly into floating data points
-        atoms.forEach(atom => {
+        // Violent Deep-Space Dispersion
+        atoms.forEach((atom) => {
           gsap.to(atom, {
-            x: gsap.utils.random(-600, 600),
-            y: gsap.utils.random(-600, 600),
-            z: gsap.utils.random(-1000, 500),
-            rotationX: gsap.utils.random(-180, 180),
-            rotationY: gsap.utils.random(-180, 180),
-            rotationZ: gsap.utils.random(-90, 90),
-            scale: gsap.utils.random(0.1, 2),
+            x: gsap.utils.random(-1200, 1200),
+            y: gsap.utils.random(-1000, 1000),
+            z: gsap.utils.random(-1500, 800),
+            rotationX: gsap.utils.random(-720, 720),
+            rotationY: gsap.utils.random(-720, 720),
+            rotationZ: gsap.utils.random(-180, 180),
+            scale: gsap.utils.random(0.5, 2.5),
             opacity: 0,
             duration: 0.8,
-            ease: "power3.in",
+            ease: "power4.in",
             force3D: true,
             overwrite: "auto"
           });
@@ -64,7 +63,7 @@ export default function MrSidReveal() {
     return () => ctx.revert();
   }, [isRevealed, mounted]);
 
-  // Fail-Safe: Instantly close the reveal if the user scrolls
+  // Fail-Safe: Instantly disperses if you scroll, preventing stuck images
   useEffect(() => {
     if (!isRevealed) return;
     const handleScroll = () => setIsRevealed(false);
@@ -72,7 +71,6 @@ export default function MrSidReveal() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isRevealed]);
 
-  // Generate the coordinates for each atom
   const grid = Array.from({ length: rows * cols }, (_, i) => ({
     r: Math.floor(i / cols),
     c: i % cols
@@ -80,14 +78,14 @@ export default function MrSidReveal() {
 
   return (
     <>
-      {/* 1. THE ATOMS (Rendered in a Portal to float above everything) */}
+      {/* 1. THE ARCHITECTURAL BLOCKS (PORTAL) */}
       {mounted && createPortal(
         <div 
           className="pointer-events-none fixed top-1/2 left-1/2 z-[9000]"
           style={{ 
             width, height, 
             transform: "translate(-50%, -50%)", 
-            perspective: "1000px" 
+            perspective: "1500px" 
           }}
         >
           {grid.map((cell, i) => (
@@ -100,11 +98,13 @@ export default function MrSidReveal() {
                 height: atomH,
                 left: cell.c * atomW,
                 top: cell.r * atomH,
-                backgroundImage: "url('/mrsid.jpg')", // Uses your JPG
+                backgroundImage: "url('/mrsid.jpg')",
                 backgroundSize: `${width}px ${height}px`,
                 backgroundPosition: `-${cell.c * atomW}px -${cell.r * atomH}px`,
                 backgroundRepeat: "no-repeat",
-                opacity: 0
+                opacity: 0,
+                // Adds subtle 3D lighting to the shattered blocks
+                boxShadow: "inset 0 0 1px rgba(255,255,255,0.1), 0 10px 20px rgba(0,0,0,0.5)" 
               }}
             />
           ))}
@@ -112,22 +112,16 @@ export default function MrSidReveal() {
         document.body
       )}
 
-      {/* 2. THE TRIGGER TEXT */}
-      <div 
-        className="group relative flex cursor-pointer items-center gap-3 z-10 w-fit"
+      {/* 2. THE SIMPLE TRIGGER TEXT */}
+      <p 
+        className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-accent,#3D8BFF)] hover:text-white transition-colors duration-300 cursor-pointer w-fit relative z-10 uppercase m-0 p-0"
         data-cursor="hover"
         onMouseEnter={() => !isTouch && setIsRevealed(true)}
         onMouseLeave={() => !isTouch && setIsRevealed(false)}
         onClick={() => isTouch && setIsRevealed(!isRevealed)}
       >
-        {/* Pulsing Live Dot */}
-        <div className={`w-2 h-2 rounded-full transition-all duration-300 ${isRevealed ? 'bg-white shadow-[0_0_10px_white]' : 'bg-[var(--pf-accent,#3D8BFF)] shadow-[0_0_10px_var(--pf-accent,#3D8BFF)] animate-pulse'}`} />
-        
-        {/* The Title */}
-        <span className="text-[var(--pf-accent,#3D8BFF)] group-hover:text-white transition-colors duration-300 font-bold uppercase tracking-[0.35em] text-[10px]">
-          WHO IS MR SID
-        </span>
-      </div>
+        WHO IS MR SID
+      </p>
     </>
   );
 }
