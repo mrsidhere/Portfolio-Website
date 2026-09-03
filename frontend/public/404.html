@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Sector Not Found | Mr Sid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;900&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #0a0a0c; color: #f4f4f6;
+            font-family: 'Inter', sans-serif;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .container { text-align: center; z-index: 10; }
+        .title {
+            font-size: 18vw; font-weight: 900; margin: 0; line-height: 1;
+            color: transparent; -webkit-text-stroke: 2px #3D8BFF;
+            text-transform: uppercase; letter-spacing: -0.02em;
+        }
+        .subtitle {
+            font-family: monospace; font-size: 12px; letter-spacing: 0.3em;
+            color: #888888; margin-top: 10px; margin-bottom: 50px; text-transform: uppercase;
+        }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            background-color: #3D8BFF; color: #0a0a0c;
+            padding: 18px 36px; text-decoration: none;
+            font-family: monospace; font-weight: bold; font-size: 12px;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            background-color: #f4f4f6;
+        }
+        /* Background grid matching your portfolio */
+        .grid-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: 1; pointer-events: none;
+        }
+        .particle {
+            position: absolute; background: #3D8BFF; border-radius: 50%;
+            opacity: 0.2; pointer-events: none; z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="container">
+        <h1 class="title">404</h1>
+        <p class="subtitle">GRAVITY ANOMALY — SECTOR DOES NOT EXIST</p>
+        <a href="/" class="btn">RETURN TO REALITY</a>
+    </div>
+
+    <!-- GSAP for Physics Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        // Zero-gravity floating effect on the numbers
+        gsap.to(".title", { 
+            y: -25, 
+            duration: 2.5, 
+            yoyo: true, 
+            repeat: -1, 
+            ease: "sine.inOut" 
+        });
+
+        // Ambient WebGL-style floating particles
+        for (let i = 0; i < 25; i++) {
+            let p = document.createElement("div");
+            p.className = "particle";
+            let size = Math.random() * 4 + 1;
+            p.style.width = size + "px";
+            p.style.height = size + "px";
+            p.style.left = Math.random() * window.innerWidth + "px";
+            p.style.top = Math.random() * window.innerHeight + "px";
+            document.body.appendChild(p);
+            
+            gsap.to(p, {
+                y: (Math.random() - 0.5) * 300,
+                x: (Math.random() - 0.5) * 300,
+                opacity: 0,
+                duration: Math.random() * 4 + 3,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                delay: Math.random() * 2
+            });
+        }
+    </script>
+</body>
+</html>

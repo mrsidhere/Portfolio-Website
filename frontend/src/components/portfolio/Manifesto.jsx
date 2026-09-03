@@ -1,17 +1,19 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import MrSidReveal from "./MrSidReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const QUOTE = "The life you live tomorrow is quietly being negotiated by the choices you make today.";
 const ABOUT_LINES = [
-  "I am Mohd Kaif, a freelance digital architect based in Delhi.",
-  "I engineer high-performance ecosystems by merging modern",
-  "animation libraries like GSAP and Lenis with robust platforms",
-  "like WordPress and Elementor. Powered by AI workflows,",
+  "I am Mohd Kaif, a digital architect engineering high-profile web ecosystems.",
+  "While WordPress and Elementor serve as my structural foundation,",
+  "I push boundaries by integrating highly realistic AI-generated video,",
+  "raw natural movements, and fine-tuned post-production audio.",
+  "This transforms standard websites into highly immersive experiences.",
   "I don't just build static pages —",
-  "I craft digital identities.",
+  "I architect digital realities.",
 ];
 
 export default function Manifesto({ reducedMotion }) {
@@ -20,10 +22,11 @@ export default function Manifesto({ reducedMotion }) {
   useEffect(() => {
     if (reducedMotion) return;
     const ctx = gsap.context(() => {
+      // Clean, elegant fade-up without chaotic layout-breaking X/Y scattering
       gsap.fromTo(".pf-quote-word",
-        { x: () => gsap.utils.random(-260, 260), y: () => gsap.utils.random(-180, 180), opacity: 0, rotation: () => gsap.utils.random(-40, 40), filter: "blur(6px)" },
-        { x: 0, y: 0, opacity: 1, rotation: 0, filter: "blur(0px)", ease: "power2.out", stagger: { each: 0.02, from: "random" },
-          scrollTrigger: { trigger: ".pf-quote", start: "top 85%", end: "top 25%", scrub: 1.2 } });
+        { y: 20, opacity: 0, filter: "blur(4px)" },
+        { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power2.out", stagger: 0.02,
+          scrollTrigger: { trigger: ".pf-quote", start: "top 85%" } });
 
       gsap.fromTo(".pf-about-line-inner",
         { yPercent: 115 },
@@ -45,25 +48,30 @@ export default function Manifesto({ reducedMotion }) {
 
       <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
         <blockquote className="pf-quote" data-testid="manifesto-quote">
-          <p className="font-serif-accent italic text-2xl sm:text-4xl lg:text-[2.6rem] leading-snug text-[var(--pf-text)]">
+          {/* Flex wrap and gap safely handle the spacing without overlapping */}
+          <p className="font-serif-accent italic text-2xl sm:text-4xl lg:text-[2.6rem] leading-snug text-[var(--pf-text)] flex flex-wrap gap-x-[0.25em] gap-y-2">
             {QUOTE.split(" ").map((w, i) => (
-              <span key={i} className="pf-quote-word inline-block will-change-transform mr-[0.28em]">{w}</span>
+              <span key={i} className="pf-quote-word inline-block will-change-transform">{w}</span>
             ))}
           </p>
           <div className="mt-10 h-px w-24 bg-[var(--pf-accent)]" />
         </blockquote>
 
         <div className="pf-about" data-testid="about-text">
-          <p className="font-mono text-[10px] tracking-[0.35em] text-[var(--pf-accent)] mb-8">WHO IS MR SID</p>
+          <div className="mb-8 font-mono text-[10px] tracking-[0.35em]">
+            <MrSidReveal />
+          </div>
+          
           <div className="space-y-1">
             {ABOUT_LINES.map((line, i) => (
               <div key={i} className="overflow-hidden">
-                <p className={`pf-about-line-inner pf-goo-hover text-base sm:text-xl leading-relaxed ${i >= 4 ? "font-bold text-[var(--pf-text)]" : "text-[var(--pf-text2)]"}`}>{line}</p>
+                <p className={`pf-about-line-inner pf-goo-hover text-base sm:text-xl leading-relaxed ${i >= ABOUT_LINES.length - 2 ? "font-bold text-[var(--pf-text)]" : "text-[var(--pf-text2)]"}`}>{line}</p>
               </div>
             ))}
           </div>
+          
           <div className="mt-12 flex flex-wrap gap-3">
-            {["GSAP", "LENIS", "WORDPRESS", "ELEMENTOR", "AI WORKFLOWS"].map((t) => (
+            {["CUSTOM WORDPRESS", "ELEMENTOR EXPERT", "HIGH-END DESIGN", "REALISTIC AI MEDIA", "IMMERSIVE UIs"].map((t) => (
               <span key={t} data-cursor="hover" className="font-mono text-[10px] tracking-[0.2em] px-4 py-2 rounded-full border border-[var(--pf-border)] transition-all duration-300 hover:bg-[var(--pf-accent)] hover:text-[var(--pf-bg)] hover:-translate-y-1">{t}</span>
             ))}
           </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "@/App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
@@ -15,8 +16,28 @@ import Vault from "@/components/portfolio/Vault";
 import ProcessEngine from "@/components/portfolio/ProcessEngine";
 import Testimonials from "@/components/portfolio/Testimonials";
 import Footer from "@/components/portfolio/Footer";
+import NotFound from "@/NotFound"; // Ensure correct path to NotFound.jsx
 
 gsap.registerPlugin(ScrollTrigger);
+
+function MainPortfolio({ theme, ready, setReady, setTheme, lenisRef, isTouch, reducedMotion }) {
+  return (
+    <>
+      <Preloader onDone={() => setReady(true)} />
+      <Toaster position="bottom-center" theme={theme} />
+      <Navbar theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} lenis={lenisRef} />
+      <main>
+        <HeroPhysics staticMode={isTouch || reducedMotion} theme={theme} ready={ready} />
+        <Manifesto reducedMotion={reducedMotion} />
+        <Marquee />
+        <Vault />
+        <ProcessEngine isTouch={isTouch} />
+        <Testimonials />
+        <Footer isTouch={isTouch} />
+      </main>
+    </>
+  );
+}
 
 function App() {
   const { isTouch, reducedMotion } = useDevice();
@@ -36,12 +57,22 @@ function App() {
 
   useEffect(() => {
     if (reducedMotion) return;
-    const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+    
+    const lenis = new Lenis({ 
+      lerp: 0.08, 
+      smoothWheel: true, 
+      smoothTouch: false, // CRITICAL: Allows frictionless native scrolling on phones
+      syncTouch: false,
+      autoSleep: false // Prevents the engine from "falling asleep" and feeling stuck
+    });
+    
     lenisRef.current = lenis;
     lenis.on("scroll", ScrollTrigger.update);
+    
     const raf = (time) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
+    
     return () => {
       gsap.ticker.remove(raf);
       lenis.destroy();
@@ -50,21 +81,30 @@ function App() {
   }, [reducedMotion]);
 
   return (
-    <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
-      {!isTouch && <Cursor />}
-      <Preloader onDone={() => setReady(true)} />
-      <Toaster position="bottom-center" theme={theme} />
-      <Navbar theme={theme} onToggleTheme={() => setTheme((t) => (t === "dark" ? "light" : "dark"))} lenis={lenisRef} />
-      <main>
-        <HeroPhysics staticMode={isTouch || reducedMotion} theme={theme} ready={ready} />
-        <Manifesto reducedMotion={reducedMotion} />
-        <Marquee />
-        <Vault />
-        <ProcessEngine isTouch={isTouch} />
-        <Testimonials />
-        <Footer isTouch={isTouch} />
-      </main>
-    </div>
+    <BrowserRouter>
+      <div className="pf-root min-h-screen bg-[var(--pf-bg)] text-[var(--pf-text)] font-body antialiased overflow-x-hidden">
+        {/* Cursor is now global and will render on all routes including 404 */}
+        {!isTouch && <Cursor />}
+        
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MainPortfolio
+                theme={theme}
+                ready={ready}
+                setReady={setReady}
+                setTheme={setTheme}
+                lenisRef={lenisRef}
+                isTouch={isTouch}
+                reducedMotion={reducedMotion}
+              />
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
