@@ -52,39 +52,69 @@ export default function ProcessEngine({ isTouch }) {
         {isTouch ? "◉ TAP A BLOB TO UNLOCK ITS PHASE" : "◉ DRAG A BLOB INTO ANOTHER TO MERGE & UNLOCK ITS PHASE"}
       </p>
 
-      <svg width="0" height="0" aria-hidden="true">
-        <defs>
-          <filter id="pf-goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11" result="goo" />
-            <feComposite in="SourceGraphic" in2="goo" operator="atop" />
-          </filter>
-        </defs>
-      </svg>
+      {/* Render the heavy SVG filter ONLY on non-touch devices */}
+      {!isTouch && (
+        <svg width="0" height="0" aria-hidden="true">
+          <defs>
+            <filter id="pf-goo">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur" />
+              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11" result="goo" />
+              <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+            </filter>
+          </defs>
+        </svg>
+      )}
 
-      <div data-testid="process-arena" className="relative h-[340px] sm:h-[440px] rounded-2xl border border-dashed border-[var(--pf-border)] overflow-hidden">
-        <div ref={arenaRef} className="absolute inset-0" style={{ filter: "url(#pf-goo)" }}>
-          {PHASES.map((phase, i) => (
-            <motion.div key={phase.id} ref={(el) => (blobRefs.current[i] = el)} drag={!isTouch} dragConstraints={arenaRef} dragElastic={0.25}
-              dragTransition={{ bounceStiffness: 320, bounceDamping: 16 }}
-              onDragEnd={() => onDragEnd(i)}
-              onTap={() => isTouch && unlock(phase.id)}
-              whileDrag={{ scale: 1.12 }}
-              animate={pulse === i ? { scale: [1, 1.35, 1] } : {}}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              data-testid={`process-blob-${phase.id}`} data-cursor="hover"
-              className="absolute w-24 h-24 sm:w-36 sm:h-36 lg:w-44 lg:h-44 cursor-grab active:cursor-grabbing"
-              style={{ left: HOME_POS[i].x, top: HOME_POS[i].y }}>
-              <div className="w-full h-full rounded-full grid place-items-center animate-blob-idle"
-                style={{ background: phase.color, animationDelay: `${i * 1.3}s` }}>
+      <div data-testid="process-arena" className={`relative rounded-2xl border border-dashed border-[var(--pf-border)] overflow-hidden ${isTouch ? 'py-16' : 'h-[340px] sm:h-[440px]'}`}>
+        
+        {isTouch ? (
+          /* MOBILE VIEW: Ultra-lightweight flex layout, zero lag */
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+            {PHASES.map((phase) => (
+              <button
+                key={phase.id}
+                onClick={() => unlock(phase.id)}
+                className="w-28 h-28 sm:w-32 sm:h-32 rounded-full grid place-items-center shadow-2xl transition-transform duration-200 active:scale-90"
+                style={{ background: phase.color }}
+              >
                 <div className="text-center pointer-events-none">
-                  <p className="font-mono text-[9px] tracking-[0.3em] text-black/60">{phase.num}</p>
-                  <p className="font-headline text-[10px] sm:text-sm font-black tracking-tight text-black">{phase.title}</p>
+                  <p className="font-mono text-[10px] tracking-[0.3em] text-black/60">{phase.num}</p>
+                  <p className="font-headline text-sm font-black tracking-tight text-black mt-1">{phase.title}</p>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </button>
+            ))}
+          </div>
+        ) : (
+          /* DESKTOP VIEW: High-end gooey physics and drag interactions */
+          <div ref={arenaRef} className="absolute inset-0" style={{ filter: "url(#pf-goo)" }}>
+            {PHASES.map((phase, i) => (
+              <motion.div 
+                key={phase.id} 
+                ref={(el) => (blobRefs.current[i] = el)} 
+                drag={true} 
+                dragConstraints={arenaRef} 
+                dragElastic={0.25}
+                dragTransition={{ bounceStiffness: 320, bounceDamping: 16 }}
+                onDragEnd={() => onDragEnd(i)}
+                whileDrag={{ scale: 1.12 }}
+                animate={pulse === i ? { scale: [1, 1.35, 1] } : {}}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                data-testid={`process-blob-${phase.id}`} 
+                data-cursor="hover"
+                className="absolute w-36 h-36 lg:w-44 lg:h-44 cursor-grab active:cursor-grabbing"
+                style={{ left: HOME_POS[i].x, top: HOME_POS[i].y }}
+              >
+                <div className="w-full h-full rounded-full grid place-items-center animate-blob-idle"
+                  style={{ background: phase.color, animationDelay: `${i * 1.3}s` }}>
+                  <div className="text-center pointer-events-none">
+                    <p className="font-mono text-[9px] tracking-[0.3em] text-black/60">{phase.num}</p>
+                    <p className="font-headline text-sm font-black tracking-tight text-black">{phase.title}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-12 grid sm:grid-cols-3 gap-6">
