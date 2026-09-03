@@ -5,6 +5,13 @@ import { PHASES } from "../../data";
 
 const HOME_POS = [{ x: "8%", y: "14%" }, { x: "40%", y: "52%" }, { x: "68%", y: "10%" }];
 
+// Custom organic border-radius values to match the irregular blob reference image
+const MOBILE_BLOB_SHAPES = [
+  "43% 57% 65% 35% / 45% 53% 47% 55%",
+  "58% 42% 35% 65% / 51% 39% 61% 49%",
+  "38% 62% 48% 52% / 63% 32% 68% 37%"
+];
+
 export default function ProcessEngine({ isTouch }) {
   const arenaRef = useRef(null);
   const blobRefs = useRef([]);
@@ -17,6 +24,15 @@ export default function ProcessEngine({ isTouch }) {
       sfx.merge();
       return [...u, id];
     });
+  };
+
+  // Mobile specific handler for haptic feedback
+  const handleMobileTap = (id) => {
+    // Trigger a 40ms light physical vibration on mobile devices that support it
+    if (typeof window !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(40);
+    }
+    unlock(id);
   };
 
   const onDragEnd = (i) => {
@@ -68,18 +84,23 @@ export default function ProcessEngine({ isTouch }) {
       <div data-testid="process-arena" className={`relative rounded-2xl border border-dashed border-[var(--pf-border)] overflow-hidden ${isTouch ? 'py-16' : 'h-[340px] sm:h-[440px]'}`}>
         
         {isTouch ? (
-          /* MOBILE VIEW: Ultra-lightweight flex layout, zero lag */
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-            {PHASES.map((phase) => (
+          /* MOBILE VIEW: Haptic organic blobs */
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-10">
+            {PHASES.map((phase, index) => (
               <button
                 key={phase.id}
-                onClick={() => unlock(phase.id)}
-                className="w-28 h-28 sm:w-32 sm:h-32 rounded-full grid place-items-center shadow-2xl transition-transform duration-200 active:scale-90"
-                style={{ background: phase.color }}
+                onClick={() => handleMobileTap(phase.id)}
+                className="w-32 h-32 flex flex-col items-center justify-center shadow-xl transition-transform duration-200 active:scale-95 px-4"
+                style={{ 
+                  background: phase.color, 
+                  borderRadius: MOBILE_BLOB_SHAPES[index] // Applies the irregular organic shape
+                }}
               >
-                <div className="text-center pointer-events-none">
-                  <p className="font-mono text-[10px] tracking-[0.3em] text-black/60">{phase.num}</p>
-                  <p className="font-headline text-sm font-black tracking-tight text-black mt-1">{phase.title}</p>
+                <div className="text-center pointer-events-none w-full">
+                  <p className="font-mono text-[10px] tracking-[0.2em] text-black/60 mb-1">{phase.num}</p>
+                  <p className="font-headline text-xs font-black tracking-tighter text-black uppercase break-words leading-none">
+                    {phase.title}
+                  </p>
                 </div>
               </button>
             ))}
