@@ -1,5 +1,14 @@
 export const PROJECTS = [
   { 
+    id: "studentsummit", 
+    title: "STUDENT SUMMIT", 
+    category: "Event Ecosystem / Custom WordPress", 
+    year: "2026", 
+    image: "/portfolio/studentsummit-banner.webp", 
+    description: "A high-performance digital platform engineered for Australia's premier student event. By integrating seamless registration flows with immersive scroll interactions and a streamlined Elementor architecture, we delivered a kinetic ecosystem that drives user engagement.",
+    link: "https://studentsummit.com.au/"
+  },
+  { 
     id: "cluckd", 
     title: "CLUCK'D", 
     category: "Digital Storefront / E-Commerce", 
